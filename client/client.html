@@ -1,0 +1,105 @@
+<head>
+  <title>cyborgmaster</title>
+</head>
+
+<body>
+</body>
+
+<!--*********** home ************* -->
+
+<template name="home">
+  <h3>targets</h3>
+  <ul>
+    <li>
+      <a href="{{pathFor 'home' id='_id'}}">home</a>
+    </li>
+    <li>
+      <a href="{{pathFor 'master' id='_id'}}"><b>master</b></a>
+    </li>    
+    {{#each players}}
+      <li>
+        <a href="{{pathFor 'player' id=_id}}">{{info}}</a>
+      </li>
+    {{/each}}
+  </ul>
+
+  {{> medialist}}
+  {{> userslist}}
+  {{> playerslist}}
+</template>
+
+<template name="medialist">
+  <h3>media</h3>
+  <ul>
+  {{#each media}}
+    <li>
+      {{name}}
+    </li>
+  {{/each}}
+  </ul>
+</template>
+
+<template name="playerslist">
+  <h3>players</h3>
+  <ul>
+  {{#each players}}
+    <li>
+      {{_id}}/{{type}}/{{info}}
+    </li>
+  {{/each}}
+  </ul>
+</template>
+
+<template name="userslist">
+  <h3>connections</h3>
+  <ul>
+  {{#each users}}
+    <li>
+      {{connectionId}} {{ipAddr}}
+    </li>
+  {{/each}}
+  </ul>
+</template>  
+
+<!--*********** master ************* -->
+
+<template name="master">
+  <table>
+    <tr>
+      <th></th>
+      {{#each players}}
+        <th>
+          {{info}}
+        </th>
+      {{/each}}
+    </tr>
+    {{#each media}}
+      <tr>
+      <th>{{name}}</th>
+        {{#each players}}
+          <td>
+            {{> tableCell}}
+          </td>
+        {{/each}}
+      </tr>
+    {{/each}}
+  </table>
+</template>
+
+<template name="tableCell">
+  <div class="state">
+    {{test}}
+    {{mediaState}}
+  </div>
+</template>
+
+<!--*********** player ************* -->
+
+<template name="player">
+  <div id="player">
+    <h1>player {{playerId}}</h1>
+    <video width="1280" height="720" controls>
+      video not supported
+    </video>
+  </div>
+</template>

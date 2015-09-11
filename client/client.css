@@ -1,0 +1,37 @@
+/* CSS declarations go here */
+
+html, body {
+  background-color: black;
+  margin:0;
+  padding: 0;
+  height:100%;
+  color:white;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,td {
+  border: 1px solid black;
+}
+
+td .state {
+  width:100%;
+}
+
+a, a:visited {
+  color:white;
+}
+
+
+
+
+#player {}
+
+#player video {
+  width:100%;
+  height: auto;
+  margin:0;
+  padding:0;
+}
