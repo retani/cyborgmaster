@@ -17,7 +17,7 @@ Meteor.publish('media', function() {
   var meteor_root = fs.realpathSync(__meteor_bootstrap__.serverDir + '/../' );
   var application_root =  fs.realpathSync( meteor_root + '/../../../../' )
   var path = application_root + '/public/media/';
-  var medias = fs.readdirSync(path);
+  var medias = fs.readdirSync(path).sort();
   _.each(medias, function(media) {
     if(media.substr(0,1) != ".") {
       self.added('media', media, { 
