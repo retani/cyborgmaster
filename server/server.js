@@ -14,10 +14,10 @@ Meteor.startup(function () {
 
 Meteor.publish('media', function() {
   var self = this;
-  var meteor_root = fs.realpathSync(__meteor_bootstrap__.serverDir + '/../' );
-  var application_root =  fs.realpathSync( meteor_root + '/../../../../' )
-  var path = application_root + '/public/media/';
-  var medias = fs.readdirSync(path).sort();
+  if (process.env.PWD) var prefix = process.env.PWD
+  else var prefix = "/users/orpheus/cyborgmaster"
+  var path = prefix + '/public/media/';
+  var medias = fs.readdirSync(path);
   _.each(medias, function(media) {
     if(media.substr(0,1) != ".") {
       self.added('media', media, { 
