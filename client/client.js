@@ -206,7 +206,7 @@ Template.player.onRendered( function() {
         console.log(doc);
         if (doc.filename) {
           if (playerType == "screen")
-            videoElem.src = "/media/" + doc.filename
+            videoElem.src = "http://localhost/public/media/" + doc.filename
           else {
             videoElem.src = "http://localhost/" + doc.filename
           }
