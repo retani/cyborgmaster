@@ -20,6 +20,8 @@ Meteor.startup(function () {
 
 });
 
+//var nodeDir = Meteor.npmRequire("node-dir")
+
 Meteor.publish('media', function() {
   var self = this;
   if (process.env.PWD) var prefix = process.env.PWD
