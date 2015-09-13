@@ -1,10 +1,4 @@
-
-Meteor.subscribe('media');
-
-Meteor.subscribe('players');
-
-// counter starts at 0
-Session.setDefault('counter', 0);
+Session.setDefault('setup', false);
 
 Template.medialist.helpers({
   'media': function () {
@@ -36,71 +30,211 @@ Template.playerslist.helpers({
 
 Template.master.helpers({
   players: function () {
-    return Players.find()
+    return Players.find({}, { sort:{"_id":1} })
   },
   'media': function () {
-    var files = Media.find({})
+    var files = Media.find({},{ sort:{"name":1} })
     return files;
+  },
+  'setup':function(){
+    return Session.get("setup");
+  },
+  'checked': function(){
+    return {"checked":(Globals.findOne({"name":"show_labels"}).value ? "checked" : null)}
+  },
+  'setupchecked': function(){
+    return { "checked": (Session.get('setup') ? "checked" : null)}
+  },  
+  'muted':function(){
+    return this.volume == 0
+  },
+  'areSelectedPlayersStopped':function(){
+    return Players.find({ 'preselect': { $type: 2 }, 'state':'stop'}).count() > 0
+  },
+  'isSelected': function () {
+    var mediaElem = Template.parentData()
+    return (this.filename == mediaElem.name)
+  },
+  'isPreselected': function () {
+    var mediaElem = Template.parentData()
+    return (this.preselect != null && this.preselect == mediaElem.name)
+  },
+}); 
+
+Template.master.events({
+  'click #show_labels': function (event) {
+    var checked = event.target.checked
+    var id = Globals.findOne({"name":"show_labels"})._id
+    Globals.update({"_id":id},{ "name":"show_labels", "value":checked})
+  },
+  'click #show_setup': function(event){
+    Session.set('setup', event.target.checked);
+  },
+  'click .mute':function(event){
+    Players.update({'_id':this._id}, {$set : {"volume":0}});
+  },
+  'click .unmute':function(event){
+    Players.update({'_id':this._id}, {$set : {"volume":1}});
+  },
+  'click .prepare_select':function(event){
+    Players.find({ 'preselect': { $type: 2 }}).forEach(function (doc) {
+      Players.update({'_id':doc._id}, { $set : { 'filename':doc.preselect /*, 'preselect':null */ } })
+    });
+  },
+  'click .prepare_clear':function(event){
+    Meteor.call('updatePreselected', { 'preselect':null });
+  },
+  'click .general_controls .play':function(event){
+    console.log("play multi")
+    Meteor.call('updatePreselected', {'state':'play'})
+  },
+  'click .general_controls .stop':function(event){
+    Meteor.call('updatePreselected', {'state':'stop'})
+  },
+  'click .general_controls .pause':function(event){
+    Meteor.call('updatePreselected', {'state':'pause'})
+  },
+}); 
+
+Template.setupCell.helpers({
+  'checked': function () {
+    var mediaElem = Template.parentData()
+    var hasEntry = Mediaavail.find({'mediaId':mediaElem.name, 'playerId':this._id}).count() > 0
+    return { 'checked' : ( hasEntry  ? "checked" : null ) }
+  },
+  'raspberry':function() {
+    return this.type=="rpi"
+  }  
+});
+
+Template.setupCell.events({
+  'click .available': function (event) {
+    var mediaElem = Template.parentData()
+    if (event.target.checked) {
+      Meteor.call('addMediaavail', { 'mediaId':mediaElem.name, 'playerId':this._id });
+    }
+    else {
+      Meteor.call('removeMediaavail', { 'mediaId':mediaElem.name, 'playerId':this._id });
+    }    
+  }
+});
+
+Template.tableCell.helpers({
+  'isSelected': function () {
+    var mediaElem = Template.parentData()
+    return (this.filename == mediaElem.name)
+  },
+  'selected': function () {
+    var mediaElem = Template.parentData()
+    return (this.filename == mediaElem.name ? {"checked":"checked"} : {"checked":null})
+  },  
+  'preselected': function () {
+    var mediaElem = Template.parentData()
+    return (Players.find({ '_id':this._id, 'preselect' : mediaElem.name }).count() > 0 ? {"checked":"checked"} : {"checked":null})
+  },    
+  'isMediaState':function(state) {
+    return this.state == state
+  },
+  'checked':function(){
+    var mediaElem = Template.parentData()
+    return Players.findOne({'_id':this._id}).filename == mediaElem.name
+  }
+});
+
+Template.tableCell.events({
+  'change .select': function (event) {
+    var mediaElem = Template.parentData()
+    var selectedVideo = mediaElem.name
+    Players.update({'_id':this._id},{$set :{'filename':mediaElem.name,'state':'stop'}})
+    /*
+    var state = this.state
+    var newstate
+    if (state == "stop") newstate = "play"
+    else newstate = "stop"
+    Players.update({'_id':this._id},{$set :{'filename':mediaElem.name, 'state':newstate}})*/
+  },
+  'click .play' : function(event){
+    var mediaElem = Template.parentData()
+    console.log("play " + mediaElem.name)
+    if (this.filename != mediaElem.name) {
+      Players.update({'_id':this._id},{$set :{'state':'stop'}})
+    }
+    Players.update({'_id':this._id},{$set :{'filename':mediaElem.name,'state':'play'}})
+  },
+  'click .pause' : function(event){
+    var mediaElem = Template.parentData()
+    Players.update({'_id':this._id},{$set :{'filename':mediaElem.name,'state':'pause'}})
+  },
+  'click .stop' : function(event){
+    var mediaElem = Template.parentData()
+    Players.update({'_id':this._id},{$set :{'filename':mediaElem.name,'state':'stop'}})
+  },
+  'click .preselect' : function(event){
+    var mediaElem = Template.parentData()
+    if (event.target.checked){
+      $('[data-player="' + this._id + '"]:not([data-media="' + mediaElem.name + '"]) .preselect').prop('checked', false)
+      console.log("[data-player=" + this._id + "]:not([data-media=\"" + mediaElem.name + "\"]) .select")
+    }
+    Players.update({'_id':this._id},{$set :{'preselect':((event.target.checked) ? mediaElem.name: null)}})
   }  
 });
 
 Template.player.helpers({
   'playerId': function () {
     return playerId
+  },
+  'player': function () {
+    return Players.findOne({"_id":playerId})
+  },
+  'info': function () {
+    return Players.findOne({"_id":playerId}).info
+  },
+  'show_info': function() {
+    return Globals.findOne({"name":"show_labels"}).value
   }
 });
 
 Template.player.onRendered( function() {
-  console.log("rendered player " + FlowRouter.getParam("id"))
-  var playerType = Players.findOne({"_id":playerId}).type
-  Players.find({ "_id" : FlowRouter.getParam("id") }).observeChanges({
-    changed: function(id, doc) {
-      if (FlowRouter.getRouteName() == "player")
-      var videoElem = $("video").get(0)
-      console.log(doc);
-      if (doc.filename) {
-        if (playerType == "screen")
-          videoElem.src = "/media/" + doc.filename
-        else {
-          videoElem.src = "http://localhost/" + doc.filename
+  console.log("rendered player " + playerId)
+  setTimeout(function(){
+    console.log(Players.find().fetch())
+    var playerType = Players.findOne({"_id":playerId}).type
+    var videoElem = $("video").get(0)
+    Players.find({ "_id" : playerId }).observeChanges({
+      changed: function(id, doc) {
+        if (FlowRouter.getRouteName() == "player")
+        console.log(doc);
+        if (doc.filename) {
+          if (playerType == "screen")
+            videoElem.src = "/media/" + doc.filename
+          else {
+            videoElem.src = "http://localhost/" + doc.filename
+          }
+        }
+        if (doc.state) {
+          if (doc.state == "play") {
+            videoElem.play()
+          }
+          else if (doc.state == "pause") {
+            videoElem.pause()
+          }
+          else if (doc.state == "stop") {
+            videoElem.pause()
+            videoElem.currentTime = 0
+          }
+        }
+        if (typeof doc.volume != "undefined") {
+          videoElem.volume = doc.volume
+          console.log(doc.volume)
         }
       }
-      if (doc.state) {
-        if (doc.state == "play") {
-          videoElem.play()
-        }
-        else {
-          videoElem.pause()
-        }
-      }
-    }
-  });       
+    });
+    videoElem.onended = function() {
+      Players.update({"_id":playerId}, { $set : {"state":"stop"}})
+    };
+    Players.update({"_id":playerId}, { $set : { "state":"stop", "filename":null } } ) // reset
+  }, 6000) // WTF!!!!!!!!!
 });
-
-Template.tableCell.helpers({
-  'isSelected': function () {
-    var mediaElem = Template.parentData()
-    
-  },
-  'mediaState': function () {
-    var mediaElem = Template.parentData()
-    if (this.filename == mediaElem.name) return this.state
-    else return "-"
-  }
-});
-
-Template.tableCell.events({
-  'click .state': function () {
-    var mediaElem = Template.parentData()
-    var state = this.state
-    var newstate
-    if (state == "stop") newstate = "play"
-    else newstate = "stop"
-    Players.update({'_id':this._id},{$set :{'filename':mediaElem.name, 'state':newstate}})
-  }
-});
-
-
 
 Connections.find({}).observe({
   'added':function() {

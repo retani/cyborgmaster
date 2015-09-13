@@ -14,6 +14,10 @@ table {
   margin:2px;
 }
 
+tr:hover {
+    color: lightblue;
+}
+
 th,td {
   border: 1px solid gray;
   padding: 2px;
@@ -25,21 +29,43 @@ th {
 }
 
 td .state {
-  width:100%;
+  width:100px;
+  opacity: 0.5;
+}
+
+td.selected .state, 
+td.preselected .state,
+td:hover .state {
+  opacity: 1;
+/*  background-image: url('data:image/svg+xml;utf8,<svg><rect x="0" y="0" width="100%" height="100%" style="fill:rgb(0,255,0)"/></svg>');*/
 }
 
 a, a:visited {
   color:white;
 }
 
-
+.group {
+  text-align: center;
+}
 
 
 #player {}
+
+#player .info {
+  position: absolute;
+  top:50vh;
+  display: block;
+  width: 100%;
+  text-align: center;
+}
 
 #player video {
   width:100%;
   height: auto;
   margin:0;
   padding:0;
+}
+
+#player[data-state=stop] video {
+  visibility: hidden;
 }

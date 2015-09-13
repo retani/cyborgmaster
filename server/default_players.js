@@ -1,24 +1,23 @@
 default_players = [
   {
-    _id: "s1",
+    _id: "c1",
     type: "screen",
-    info: "screen 1",
-    ips: ["192.168.0.22","127.0.0.1"]
+    info: "Screen 1"
   },
   {
-    _id: "s2",
+    _id: "c2",
     type: "screen",
-    info: "screen 2"
+    info: "Screen 2"
   },
   {
-    _id: "s3",
+    _id: "c3",
     type: "screen",
-    info: "screen 3"
+    info: "Screen 3"
   },
   {
-    _id: "s4",
+    _id: "c4",
     type: "screen",
-    info: "screen 4"
+    info: "Screen 4"
   },
   {
     _id: "r1",

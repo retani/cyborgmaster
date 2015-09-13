@@ -70,6 +70,12 @@
       {{#each players}}
         <th>
           {{info}}
+          <br>
+          {{#if muted}}
+            <button class="unmute"><i class="fa fa-volume-off"></i></button>
+          {{else}}
+            <button class="mute"><i class="fa fa-volume-up"></i></button>
+          {{/if}}
         </th>
       {{/each}}
     </tr>
@@ -77,29 +83,74 @@
       <tr>
       <th>{{name}}</th>
         {{#each players}}
-          <td>
-            {{> tableCell}}
+          <td data-media="{{../name}}" data-player="{{_id}}" class="{{#if isSelected}}selected{{/if}} {{#if isPreselected}}preselected{{/if}}">
+            {{#if setup}}
+              {{>setupCell}}
+            {{else}}
+              {{> tableCell}}
+            {{/if}}
           </td>
         {{/each}}
       </tr>
     {{/each}}
   </table>
+  <div class="general_controls">
+    <p class="group">
+      <span>Group selection: </span>
+      <button class="prepare_select">select/preload</button>
+
+      <button class="play"><i class="fa fa-play"></i></button>
+      <button class="pause"><i class="fa fa-pause"></i></button>      
+      <button class="stop"><i class="fa fa-stop"></i></button>
+
+      <button class="prepare_clear">clear</button>
+
+    </p>
+    <p>
+      <label><input id="show_labels" type="checkbox" value="yes" {{checked}}> Show screen labels</label><br>
+      <label><input id="show_setup" type="checkbox" value="yes" {{setupchecked}}> Raspberries media setup</label>
+    </p>
+  </div>
+</template>
+
+<template name="setupCell">
+  {{#if raspberry}}
+    <input class="available" type="checkbox" {{checked}}>
+  {{/if}}
 </template>
 
 <template name="tableCell">
   <div class="state">
-    {{test}}
-    {{mediaState}}
+    <input class="preselect" type="checkbox" name="{{_id}}" value="{{../name}}" {{preselected}}>
+    <input class="select" type="radio" name="{{_id}}" value="{{../name}}" {{selected}}>
+    {{#if isSelected}}
+      {{#if isMediaState 'stop'}}
+        <button class="play"><i class="fa fa-play"></i></button>
+      {{else}}
+        {{#if isMediaState 'pause'}}
+          <button class="play"><i class="fa fa-play"></i></button>
+        {{else}}
+          <button class="pause"><i class="fa fa-pause"></i></button>      
+        {{/if}}
+        <button class="stop"><i class="fa fa-stop"></i></button>
+      {{/if}}
+    {{else}}
+      <button class="play"><i class="fa fa-play"></i></button>
+    {{/if}}
   </div>
 </template>
 
 <!--*********** player ************* -->
 
 <template name="player">
-  <div id="player">
-    <h1>player {{playerId}}</h1>
-    <video width="1280" height="720" preload="auto">
-      video not supported
-    </video>
-  </div>
+  {{#with player}}
+    <div id="player" data-state="{{state}}">
+      {{#if show_info}}
+      <h1 class="info">{{info}}</h1>
+      {{/if}}
+      <video width="1280" height="720" preload="auto">
+        video not supported
+      </video>
+    </div>
+  {{/with}}
 </template>

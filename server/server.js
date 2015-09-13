@@ -1,14 +1,22 @@
 Meteor.startup(function () {
 
   Connections.remove({})
-  Players.remove({})
+  
+  if (Players.find().count() == 0) {
 
-  _.each(default_players, function (player) {
-    Players.insert(_.extend(player, {
-      state : "stop",
-      filename : ""
-    }));
-  });
+    _.each(default_players, function (player) {
+      Players.insert(_.extend(player, {
+        state : "stop",
+        filename : "",
+        volume: 1.0
+      }));
+    });
+  }
+
+  if (Globals.find({"name":"show_labels"}).count() == 0) {
+    Globals.insert({"name":"show_labels", "value":true})
+  }
+
 
 });
 
@@ -48,7 +56,7 @@ UserStatus.events.on("connectionLogout", function(fields) {
 })
 
 
-
+/*
 Players.find({ "type" : "rpi" }).observe({
   changed: function(olddoc,newdoc) {
 
@@ -57,9 +65,16 @@ Players.find({ "type" : "rpi" }).observe({
       if (newdoc.state == "play") {
         var url_suffix = 'play/" + "/home/pi/cyborg/media/" + newdoc.filename'
       }
+      else if (newdoc.state == "stop") {
+        var url_suffix = 'stop/'
+      }
+      else if (newdoc.state == "stop") {
+        var url_suffix = 'pause/'
+      }      
       var url = url_prefix + url_suffix
       console.log(url)
       Meteor.http.call("GET", url);
     }
   }
 });     
+*/
