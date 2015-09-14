@@ -39,8 +39,8 @@ Template.master.helpers({
   'setup':function(){
     return Session.get("setup");
   },
-  'checked': function(){
-    return {"checked":(Globals.findOne({"name":"show_labels"}).value ? "checked" : null)}
+  'labelschecked': function(){
+    return {"checked":(Players.find({"show_labels":true}).count() > 0 ? "checked" : null)}
   },
   'setupchecked': function(){
     return { "checked": (Session.get('setup') ? "checked" : null)}
@@ -63,9 +63,9 @@ Template.master.helpers({
 
 Template.master.events({
   'click #show_labels': function (event) {
+    console.log("checked labes")
     var checked = event.target.checked
-    var id = Globals.findOne({"name":"show_labels"})._id
-    Globals.update({"_id":id},{ "name":"show_labels", "value":checked})
+    Meteor.call('labels', checked, function (error, result) {});
   },
   'click #show_setup': function(event){
     Session.set('setup', event.target.checked);
@@ -190,7 +190,7 @@ Template.player.helpers({
     return Players.findOne({"_id":playerId}).info
   },
   'show_info': function() {
-    return Globals.findOne({"name":"show_labels"}).value
+    return Players.findOne({"_id":playerId}).show_labels
   }
 });
 

@@ -33,5 +33,9 @@ Meteor.methods({
     var filename = data.filename
     Players.update({_id:playerId}, { $set : {'filename':filename} })
     return state
-  }  
+  },
+  'labels':function (show) {
+    console.log("switching labels " + (show ? "on" : "off"))
+    Players.update({},{ $set : {'show_labels' : show}},{multi:true})
+  },
 })

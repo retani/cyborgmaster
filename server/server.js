@@ -13,9 +13,8 @@ Meteor.startup(function () {
     });
   }
 
-  if (Globals.find({"name":"show_labels"}).count() == 0) {
-    Globals.insert({"name":"show_labels", "value":true})
-  }
+  Globals.remove({})
+  Globals.insert({"name":"show_labels", "value":true})
 
 
 });
