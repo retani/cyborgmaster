@@ -49,7 +49,9 @@ a, a:visited {
 }
 
 
-#player {}
+#player {
+  overflow:hidden;
+}
 
 #player .info {
   position: absolute;
