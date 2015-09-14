@@ -30,7 +30,7 @@ th {
 
 td .state {
   width:115px;
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 td.selected .state, 
