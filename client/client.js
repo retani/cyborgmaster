@@ -196,6 +196,7 @@ Template.player.helpers({
 
 Template.player.onRendered( function() {
   console.log("rendered player " + playerId)
+  $("body").css("overflow","hidden")
   setTimeout(function(){
     console.log(Players.find().fetch())
     var playerType = Players.findOne({"_id":playerId}).type
