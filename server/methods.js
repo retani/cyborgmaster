@@ -1,6 +1,18 @@
 Meteor.methods({
   'updatePreselected' : function (set) {
-    Players.update( { 'preselect': { $type: 2 } }, { $set : set }, {multi:true} )
+    if (set.state == "play" && Players.find({ 'preselect': { $type: 2 }, 'type':'rpi', 'state':'stop' }).count() > 0) {// special case, sync raspberries
+      console.log("sync rpi")
+      Players.update( { 'preselect': { $type: 2 }, 'type':'rpi' }, { $set : { state:'play'} }, {multi:true} )
+      Meteor.setTimeout(function(){
+        Players.update( { 'preselect': { $type: 2 }, 'type':'rpi' }, { $set : { state:'pause'} }, {multi:true} )
+        Meteor.setTimeout(function(){
+          Players.update( { 'preselect': { $type: 2 } }, { $set : set }, {multi:true} )
+        },2000)
+      },500)
+    }
+    else {
+      Players.update( { 'preselect': { $type: 2 } }, { $set : set }, {multi:true} )
+    }
   },
   'addMediaavail' : function (doc) {
     Mediaavail.upsert( doc, doc )

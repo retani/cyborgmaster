@@ -25,7 +25,7 @@ Meteor.startup(function () {
 Meteor.publish('media', function() {
   var self = this;
   if (process.env.PWD) var prefix = process.env.PWD
-  else var prefix = "/users/orpheus/cyborgmaster"
+  else var prefix = "/users/orpheus/media/"
   var path = prefix + '/public/media/';
   var medias = fs.readdirSync(path);
   _.each(medias, function(media) {

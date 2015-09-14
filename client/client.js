@@ -78,7 +78,7 @@ Template.master.events({
   },
   'click .prepare_select':function(event){
     Players.find({ 'preselect': { $type: 2 }}).forEach(function (doc) {
-      Players.update({'_id':doc._id}, { $set : { 'filename':doc.preselect /*, 'preselect':null */ } })
+      Players.update({'_id':doc._id}, { $set : { 'filename':doc.preselect , 'state':'stop'  } })
     });
   },
   'click .prepare_clear':function(event){
@@ -206,7 +206,7 @@ Template.player.onRendered( function() {
         console.log(doc);
         if (doc.filename) {
           if (playerType == "screen")
-            videoElem.src = "/media/" + doc.filename
+            videoElem.src = "http://" + mediaserver_address + "/public/media/" + doc.filename
           else {
             videoElem.src = "http://localhost/" + doc.filename
           }
