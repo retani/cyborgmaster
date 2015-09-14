@@ -1,0 +1,1 @@
+cwRsync_5.4.1_x86_Free\rsync.exe -avz --progress /cygdrive/Users/Orpheus/media/public/media/* pi@192.168.0.10:/home/pi/cyborg/media
