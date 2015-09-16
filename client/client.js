@@ -59,6 +59,9 @@ Template.master.helpers({
     var mediaElem = Template.parentData()
     return (this.preselect != null && this.preselect == mediaElem.name)
   },
+  'isPlayerType' : function(type){
+    return this.type == type
+  }
 }); 
 
 Template.master.events({
@@ -76,6 +79,9 @@ Template.master.events({
   'click .unmute':function(event){
     Players.update({'_id':this._id}, {$set : {"volume":1}});
   },
+  'change .volume':function(event){
+    Players.update({'_id':this._id}, {$set : {"volume":event.target.value}});
+  },  
   'click .prepare_select':function(event){
     Players.find({ 'preselect': { $type: 2 }}).forEach(function (doc) {
       Players.update({'_id':doc._id}, { $set : { 'filename':doc.preselect , 'state':'stop'  } })
@@ -207,7 +213,7 @@ Template.player.onRendered( function() {
         console.log(doc);
         if (doc.filename) {
           if (playerType == "screen")
-            videoElem.src = "http://" + mediaserver_address + "/public/media/" + doc.filename
+            videoElem.src = "http://" + mediaserver_address + "/" + mediaserver_path + doc.filename
           else {
             videoElem.src = "http://localhost/" + doc.filename
           }

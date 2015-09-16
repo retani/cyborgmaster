@@ -12,10 +12,16 @@ Meteor.startup(function () {
       }));
     });
   }
+  else {
+    _.each(default_players, function(player){
+      Players.update({'_id':player._id}, {$set:{info:player.info}});
+    })
+  }
 
   Globals.remove({})
   Globals.insert({"name":"show_labels", "value":true})
 
+  Players.update({},{ $set : { 'mediaserver_address':mediaserver_address, 'mediaserver_path':mediaserver_path } }, {multi:true})  
 
 });
 

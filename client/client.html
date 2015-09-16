@@ -71,10 +71,14 @@
         <th>
           {{info}}
           <br>
-          {{#if muted}}
-            <button class="unmute"><i class="fa fa-volume-off"></i></button>
+          {{#if isPlayerType 'rpi'}}
+            {{#if muted}}
+              <button class="unmute"><i class="fa fa-volume-off"></i></button>
+            {{else}}
+              <button class="mute"><i class="fa fa-volume-up"></i></button>
+            {{/if}}
           {{else}}
-            <button class="mute"><i class="fa fa-volume-up"></i></button>
+            <input class="volume" type="range" min="0" max="1" step="0.1" value={{volume}}>
           {{/if}}
         </th>
       {{/each}}
