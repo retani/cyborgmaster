@@ -18,7 +18,7 @@ Template.userslist.helpers({
 
 Template.home.helpers({
   players: function () {
-    return Players.find()
+    return Players.find({'type':'screen'})
   }
 });
 
