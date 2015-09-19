@@ -70,7 +70,7 @@ pingPlayers = function(){
   Players.update({'pingback':{$gt:0}}, {$set:{'connected':true}}, {multi:true});
   Meteor.call('playersPing', null, function (error, result) {});
 }
-Meteor.setInterval(pingPlayers,1000)
+//Meteor.setInterval(pingPlayers,1000)
 
 /*
 Players.find({ "type" : "rpi" }).observe({
