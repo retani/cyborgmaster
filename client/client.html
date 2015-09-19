@@ -68,7 +68,7 @@
     <tr>
       <th></th>
       {{#each players}}
-        <th>
+        <th class="monitored {{#if connected}}connected{{/if}}">
           {{info}}
           <br>
           {{#if isPlayerType 'rpi'}}
@@ -112,7 +112,7 @@
     </p>
     <p>
       <label><input id="show_labels" type="checkbox" value="yes" {{labelschecked}}> Show screen labels</label><br>
-      <label><input id="show_setup" type="checkbox" value="yes" {{setupchecked}}> Raspberries media setup</label>
+      <!--label><input id="show_setup" type="checkbox" value="yes" {{setupchecked}}> Raspberries media setup</label-->
     </p>
   </div>
 </template>

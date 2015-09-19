@@ -38,4 +38,10 @@ Meteor.methods({
     console.log("switching labels " + (show ? "on" : "off"))
     Players.update({},{ $set : {'show_labels' : show}},{multi:true})
   },
+  'playersPing':function(){
+    Players.update({}, {$set:{'pingback':0, 'pingtime':Date.now()}},{multi:true});
+  },
+  'playerPingback':function(playerId){
+    Players.update({'_id':playerId},{$inc:{'pingback':1}})
+  }
 })

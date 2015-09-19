@@ -26,7 +26,17 @@ th,td {
 
 th {
   text-align: left;
+  transition:background-color 1s;
 }
+
+th.monitored:not(.connected) {
+  background-color: red
+}
+
+th.monitored.connected {
+  background-color: green
+}
+
 
 td .state {
   width:115px;

@@ -23,6 +23,9 @@ Meteor.startup(function () {
 
   Players.update({},{ $set : { 'mediaserver_address':mediaserver_address, 'mediaserver_path':mediaserver_path } }, {multi:true})  
 
+  Meteor.publish('players', function(){
+    return Players.find()
+  })
 });
 
 //var nodeDir = Meteor.npmRequire("node-dir")
@@ -62,6 +65,12 @@ UserStatus.events.on("connectionLogout", function(fields) {
   Connections.remove({"connectionId" : fields.connectionId})
 })
 
+pingPlayers = function(){
+  Players.update({'pingback':0}, {$set:{'connected':false}}, {multi:true});
+  Players.update({'pingback':{$gt:0}}, {$set:{'connected':true}}, {multi:true});
+  Meteor.call('playersPing', null, function (error, result) {});
+}
+Meteor.setInterval(pingPlayers,1000)
 
 /*
 Players.find({ "type" : "rpi" }).observe({

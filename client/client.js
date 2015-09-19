@@ -200,15 +200,22 @@ Template.player.helpers({
   }
 });
 
+Template.player.onCreated(function(){
+})
+
 Template.player.onRendered( function() {
-  console.log("rendered player " + playerId)
-  $("body").css("overflow","hidden")
-  setTimeout(function(){
+  this.subscribe('players', function(){
+    console.log("rendered player " + playerId)
+    $("body").css("overflow","hidden")
     console.log(Players.find().fetch())
     var playerType = Players.findOne({"_id":playerId}).type
     var videoElem = $("video").get(0)
-    Players.find({ "_id" : playerId }).observeChanges({
+    observer = Players.find({ "_id" : playerId }).observeChanges({
       changed: function(id, doc) {
+        if (doc.pingtime) {
+          console.log("pingback",playerId)
+          Meteor.call('playerPingback', playerId, function (error, result) {});
+        }
         if (FlowRouter.getRouteName() == "player")
         console.log(doc);
         if (doc.filename) {
@@ -240,8 +247,12 @@ Template.player.onRendered( function() {
       Players.update({"_id":playerId}, { $set : {"state":"stop"}})
     };
     Players.update({"_id":playerId}, { $set : { "state":"stop", "filename":null } } ) // reset
-  }, 6000) // WTF!!!!!!!!!
+  })
 });
+
+Template.player.onDestroyed(function(){
+  observer.stop()
+})
 
 Connections.find({}).observe({
   'added':function() {
