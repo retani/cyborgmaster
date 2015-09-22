@@ -32,9 +32,7 @@ Meteor.startup(function () {
 
 Meteor.publish('media', function() {
   var self = this;
-  if (process.env.PWD) var prefix = process.env.PWD
-  else var prefix = "/users/orpheus/media/"
-  var path = prefix + '/public/media/';
+  var path = local_media_path;
   var medias = fs.readdirSync(path);
   _.each(medias, function(media) {
     if(media.substr(0,1) != ".") {
@@ -70,7 +68,7 @@ pingPlayers = function(){
   Players.update({'pingback':{$gt:0}}, {$set:{'connected':true}}, {multi:true});
   Meteor.call('playersPing', null, function (error, result) {});
 }
-//Meteor.setInterval(pingPlayers,1000)
+Meteor.setInterval(pingPlayers,1000)
 
 /*
 Players.find({ "type" : "rpi" }).observe({
