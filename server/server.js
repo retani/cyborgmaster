@@ -1,7 +1,8 @@
 Meteor.startup(function () {
 
   Connections.remove({})
-  
+
+/*
   if (Players.find().count() == 0) {
 
     _.each(default_players, function (player) {
@@ -17,6 +18,17 @@ Meteor.startup(function () {
       Players.update({'_id':player._id}, {$set:{info:player.info}});
     })
   }
+*/
+
+  Players.remove({})
+    _.each(default_players, function (player) {
+    Players.insert(_.extend(player, {
+      state : "stop",
+      filename : "",
+      volume: 1.0
+    }));
+  });
+
 
   Globals.remove({})
   Globals.insert({"name":"show_labels", "value":true})
@@ -68,7 +80,20 @@ pingPlayers = function(){
   Players.update({'pingback':{$gt:0}}, {$set:{'connected':true}}, {multi:true});
   Meteor.call('playersPing', null, function (error, result) {});
 }
-Meteor.setInterval(pingPlayers,1000)
+Meteor.setInterval(pingPlayers,2000)
+
+Players.find({ 'paired' : { $type: 2 }}).observeChanges({ // check for paired players
+  changed: function (id, fields) {
+    if (fields.filename) {
+      var masterPlayer = Players.findOne({_id: id})
+      Players.update({ _id : masterPlayer.paired }, { $set : { filename: masterPlayer.filename } })
+    }
+    if (fields.state) {
+      var masterPlayer = Players.findOne({_id: id})
+      Players.update({ _id : masterPlayer.paired }, { $set : { state: masterPlayer.state } })
+    }    
+  },
+});
 
 /*
 Players.find({ "type" : "rpi" }).observe({

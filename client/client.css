@@ -15,13 +15,14 @@ table {
 }
 
 tr:hover {
-    color: lightblue;
+    background-color: darkblue;
 }
 
 th,td {
   border: 1px solid gray;
   padding: 2px;
   font-weight: normal;
+  white-space: nowrap;
 }
 
 th {
@@ -37,10 +38,21 @@ th.monitored.connected {
   background-color: green
 }
 
+td.media_unavailable {
+  background-color:red !important;
+  opacity: 0;
+  pointer-events:none;
+}
 
 td .state {
   width:115px;
   opacity: 0.3;
+}
+
+td .state:not(.connected) {
+  width:115px;
+  opacity: 0.05;
+
 }
 
 td.selected .state, 
@@ -48,6 +60,26 @@ td.preselected .state,
 td:hover .state {
   opacity: 1;
 /*  background-image: url('data:image/svg+xml;utf8,<svg><rect x="0" y="0" width="100%" height="100%" style="fill:rgb(0,255,0)"/></svg>');*/
+}
+
+td.selected .state:not(.connected), 
+td.preselected .state:not(.connected),
+td:hover .state:not(.connected) {
+  opacity: 0.3;
+/*  background-image: url('data:image/svg+xml;utf8,<svg><rect x="0" y="0" width="100%" height="100%" style="fill:rgb(0,255,0)"/></svg>');*/
+}
+
+td.selected {
+  background-color: blue;
+}
+
+td {
+  padding:2px 3px 2px 2px;
+}
+
+td.preselected, .group_controls {
+  padding:0px 0px 0px 1px;
+  border: solid rgba(255,255,0,0.5) 3px;
 }
 
 a, a:visited {
@@ -58,6 +90,9 @@ a, a:visited {
   text-align: center;
 }
 
+.group_controls {
+  padding: 5px;
+}
 
 #player {
   overflow:hidden;
@@ -74,6 +109,7 @@ a, a:visited {
 #player video {
   width:100%;
   height: auto;
+  max-width: 100vw;
   margin:0;
   padding:0;
 }

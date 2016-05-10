@@ -70,6 +70,9 @@
       {{#each players}}
         <th class="monitored {{#if connected}}connected{{/if}}">
           {{info}}
+          {{#if paired}}
+            ⥤ {{pairedPlayer.info}}
+          {{/if}}
           <br>
           {{#if isPlayerType 'rpi'}}
             {{#if muted}}
@@ -87,7 +90,7 @@
       <tr>
       <th>{{name}}</th>
         {{#each players}}
-          <td data-media="{{../name}}" data-player="{{_id}}" class="{{#if isSelected}}selected{{/if}} {{#if isPreselected}}preselected{{/if}}">
+          <td data-media="{{../name}}" data-player="{{_id}}" class="{{#if isSelected}}selected{{/if}} {{#if isPreselected}}preselected{{/if}} {{#if mediaUnavailable}}media_unavailable{{/if}}">
             {{#if setup}}
               {{>setupCell}}
             {{else}}
@@ -99,17 +102,24 @@
     {{/each}}
   </table>
   <div class="general_controls">
-    <p class="group">
-      <span>Group selection: </span>
-      <button class="prepare_select">select/preload</button>
+    {{#if groupControlAmount}}
+      <p class="group">
+        
+        <span>Group selection ({{groupControlAmount}}): </span>
+        
+        <span class="group_controls">
+          <button class="prepare_select">select/preload</button>
 
-      <button class="play"><i class="fa fa-play"></i></button>
-      <button class="pause"><i class="fa fa-pause"></i></button>      
-      <button class="stop"><i class="fa fa-stop"></i></button>
+          <button class="play"><i class="fa fa-play"></i></button>
+          <button class="pause"><i class="fa fa-pause"></i></button>      
+          <button class="stop"><i class="fa fa-stop"></i></button>
 
-      <button class="prepare_clear">clear</button>
+        </span>
 
-    </p>
+        &nbsp;<button class="prepare_clear">clear</button>
+
+      </p>
+    {{/if}}
     <p>
       <label><input id="show_labels" type="checkbox" value="yes" {{labelschecked}}> Show screen labels</label><br>
       <!--label><input id="show_setup" type="checkbox" value="yes" {{setupchecked}}> Raspberries media setup</label-->
@@ -124,22 +134,22 @@
 </template>
 
 <template name="tableCell">
-  <div class="state">
-    <input class="preselect" type="checkbox" name="{{_id}}" value="{{../name}}" {{preselected}}>
-    <input class="select" type="radio" name="{{_id}}" value="{{../name}}" {{selected}}>
+  <div class="state {{#if connected}}connected{{/if}}">
+    <input title="chose '{{../name}}' on '{{info}}' for group control" class="preselect" type="checkbox" name="{{_id}}" value="{{../name}}" {{preselected}}>
+    <input title="preload '{{../name}}' into player on '{{info}}' for exact timing (stops current activity)" class="select" type="radio" name="{{_id}}" value="{{../name}}" {{selected}}>
     {{#if isSelected}}
       {{#if isMediaState 'stop'}}
-        <button class="play"><i class="fa fa-play"></i></button>
+        <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
       {{else}}
         {{#if isMediaState 'pause'}}
-          <button class="play"><i class="fa fa-play"></i></button>
+          <button title="continue '{{../name}}' on '{{info}}'" class="play"><i class="fa fa-play"></i></button>
         {{else}}
-          <button class="pause"><i class="fa fa-pause"></i></button>      
+          <button title="pause '{{../name}}' on '{{info}}'" class="pause"><i class="fa fa-pause"></i></button>      
         {{/if}}
-        <button class="stop"><i class="fa fa-stop"></i></button>
+        <button title="stop '{{../name}}' on '{{info}}'" class="stop"><i class="fa fa-stop"></i></button>
       {{/if}}
     {{else}}
-      <button class="play"><i class="fa fa-play"></i></button>
+      <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
     {{/if}}
   </div>
 </template>

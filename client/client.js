@@ -61,6 +61,19 @@ Template.master.helpers({
   },
   'isPlayerType' : function(type){
     return this.type == type
+  },
+  'groupControlAmount' : function() {
+    return Players.find({ 'preselect' : { $ne: null } }).count()
+  },
+  'mediaUnavailable' : function() {
+    var mediaId = Template.parentData()._id
+    var mediaKey = filename2key(mediaId)
+    if (this.type != 'rpi' || !this.mediaStatus) return false
+    //console.log(this.mediaStatus,mediaKey, this.mediaStatus[mediaKey])
+    if (!this.mediaStatus[mediaKey] || !this.mediaStatus[mediaKey].available) return true
+  },
+  'pairedPlayer' : function() {
+    return ( this.paired ? Players.findOne({ _id: this.paired }) : null )
   }
 }); 
 
@@ -208,7 +221,7 @@ Template.player.onRendered( function() {
     console.log("rendered player " + playerId)
     $("body").css("overflow","hidden")
     console.log(Players.find().fetch())
-    var playerType = Players.findOne({"_id":playerId}).type
+    var player = Players.findOne({"_id":playerId})
     var videoElem = $("video").get(0)
     observer = Players.find({ "_id" : playerId }).observeChanges({
       changed: function(id, doc) {
@@ -219,13 +232,19 @@ Template.player.onRendered( function() {
         if (FlowRouter.getRouteName() == "player")
         console.log(doc);
         if (doc.filename) {
-          if (playerType == "screen")
+          if (player.type == "screen")
             videoElem.src = "http://" + mediaserver_address + "/" + mediaserver_path + doc.filename
           else {
             videoElem.src = "http://localhost/" + doc.filename
           }
+          if (player.specialPreload && !doc.state) {
+            mobileBrowserPreload("init", videoElem)
+          }
         }
         if (doc.state) {
+          if (mobileBrowserPreloadActive) {
+            mobileBrowserPreload("abort", videoElem)
+          }
           if (doc.state == "play") {
             videoElem.play()
           }
@@ -249,6 +268,23 @@ Template.player.onRendered( function() {
     Players.update({"_id":playerId}, { $set : { "state":"stop", "filename":null } } ) // reset
   })
 });
+
+mobileBrowserPreloadActive = false
+mobileBrowserPreload = function(action, videoElem) {
+  if (action == "init") {
+    videoElem.play()
+    mobileBrowserPreloadActive = true
+    var vE = videoElem
+    setTimeout(function(){
+      mobileBrowserPreload("abort", vE)
+    }, 5000)
+  }
+  if (action == "abort") {
+    videoElem.pause()
+    videoElem.currentTime = 0
+    mobileBrowserPreloadActive = false
+  }
+}
 
 Template.player.onDestroyed(function(){
   observer.stop()

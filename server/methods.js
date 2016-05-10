@@ -32,7 +32,17 @@ Meteor.methods({
     var playerId = data.playerId
     var filename = data.filename
     Players.update({_id:playerId}, { $set : {'filename':filename} })
-    return state
+    return filename
+  },
+  'setPlayerMediaStatus' : function(data) {
+    var playerId = data.playerId
+    var filename = data.filename
+    var attr = data.attr
+    var value = data.value
+    var set = {}
+    set["mediaStatus." + filename2key(filename) + "." + attr] = value
+    Players.update({_id:playerId}, { $set : set })
+    console.log("set media status on " + playerId +": " + "'filename'." + attr + "." + value)
   },
   'labels':function (show) {
     console.log("switching labels " + (show ? "on" : "off"))
