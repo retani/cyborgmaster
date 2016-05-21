@@ -134,8 +134,9 @@ Template.setupCell.helpers({
   'inProgress' : function() {
     var mediaId = Template.parentData()._id
     var mediaKey = filename2key(mediaId)
-    if (this.mediaStatus)
-    console.log(this.mediaStatus[mediaKey].required , this.mediaStatus[mediaKey].available, mediaKey || null)
+    if (this.mediaStatus) {
+      console.log(this.mediaStatus[mediaKey].required , this.mediaStatus[mediaKey].available, mediaKey || null)
+    }
     return (this.mediaStatus && this.mediaStatus[mediaKey] && this.mediaStatus[mediaKey].required && !this.mediaStatus[mediaKey].available)
   }
 });
@@ -219,6 +220,18 @@ Template.tableCell.events({
     }
     Players.update({'_id':this._id},{$set :{'preselect':((event.target.checked) ? mediaElem.name: null)}})
   }  
+});
+
+Template.uploadIndicator.helpers({
+  /*'percentage': function () {
+    var mediaId = Template.parentData(3)._id
+    var mediaKey = filename2key(mediaId)
+    var mediaItem = this.mediaStatus[mediaKey]
+
+    if (mediaItem && mediaItem.progress && mediaItem.progress < 0.99) {
+      return mediaItem.progress * 100
+    }
+  },*/
 });
 
 Template.player.helpers({

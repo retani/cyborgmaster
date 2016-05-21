@@ -42,7 +42,7 @@ Meteor.methods({
     var set = {}
     set["mediaStatus." + filename2key(mediaId) + "." + attr] = value
     Players.update({_id:playerId}, { $set : set })
-    console.log("set media status on " + playerId +": " + "'" + mediaId + "'." + attr + "." + value)
+    console.log("set media status on " + playerId +": " + "'" + mediaId + "'." + attr + " = " + value, set)
   },
   'labels':function (show) {
     console.log("switching labels " + (show ? "on" : "off"))
