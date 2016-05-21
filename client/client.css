@@ -23,6 +23,7 @@ th,td {
   padding: 2px;
   font-weight: normal;
   white-space: nowrap;
+  height:1.4em;
 }
 
 th {
@@ -38,7 +39,7 @@ th.monitored.connected {
   background-color: green
 }
 
-td.media_unavailable {
+td.media_unavailable .state:not(.setup) {
   background-color:red !important;
   opacity: 0;
   pointer-events:none;
@@ -49,10 +50,13 @@ td .state {
   opacity: 0.3;
 }
 
+td .state.setup {
+  opacity: 0.85;
+}
+
 td .state:not(.connected) {
   width:115px;
   opacity: 0.05;
-
 }
 
 td.selected .state, 

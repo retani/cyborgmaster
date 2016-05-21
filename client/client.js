@@ -69,7 +69,7 @@ Template.master.helpers({
     var mediaId = Template.parentData()._id
     var mediaKey = filename2key(mediaId)
     if (this.type != 'rpi' || !this.mediaStatus) return false
-    //console.log(this.mediaStatus,mediaKey, this.mediaStatus[mediaKey])
+    //console.log(this.mediaStatus, mediaKey, this.mediaStatus[mediaKey])
     if (!this.mediaStatus[mediaKey] || !this.mediaStatus[mediaKey].available) return true
   },
   'pairedPlayer' : function() {
@@ -123,7 +123,21 @@ Template.setupCell.helpers({
   },
   'raspberry':function() {
     return this.type=="rpi"
-  }  
+  },
+  'mediaUnavailable' : function() {
+    var mediaId = Template.parentData()._id
+    var mediaKey = filename2key(mediaId)
+    if (this.type != 'rpi' || !this.mediaStatus) return false
+    //console.log(this.mediaStatus, mediaKey, this.mediaStatus[mediaKey])
+    if (!this.mediaStatus[mediaKey] || !this.mediaStatus[mediaKey].available) return true
+  },  
+  'inProgress' : function() {
+    var mediaId = Template.parentData()._id
+    var mediaKey = filename2key(mediaId)
+    if (this.mediaStatus)
+    console.log(this.mediaStatus[mediaKey].required , this.mediaStatus[mediaKey].available, mediaKey || null)
+    return (this.mediaStatus && this.mediaStatus[mediaKey] && this.mediaStatus[mediaKey].required && !this.mediaStatus[mediaKey].available)
+  }
 });
 
 Template.setupCell.events({
@@ -134,6 +148,15 @@ Template.setupCell.events({
     }
     else {
       Meteor.call('removeMediaavail', { 'mediaId':mediaElem.name, 'playerId':this._id });
+    }    
+  },
+  'click button' : function(event) {
+    var mediaElem = Template.parentData()
+    if ($(event.target).hasClass("add_media")) {
+      Meteor.call('setPlayerMediaStatus', { 'mediaId':mediaElem.name, 'playerId':this._id, attr: 'required', value: true });
+    }
+    else {
+      Meteor.call('setPlayerMediaStatus', { 'mediaId':mediaElem.name, 'playerId':this._id, attr: 'required', value: false });
     }    
   }
 });
@@ -151,12 +174,12 @@ Template.tableCell.helpers({
     var mediaElem = Template.parentData()
     return (Players.find({ '_id':this._id, 'preselect' : mediaElem.name }).count() > 0 ? {"checked":"checked"} : {"checked":null})
   },    
-  'isMediaState':function(state) {
+  'isMediaState':function(state) {   
     return this.state == state
   },
   'checked':function(){
     var mediaElem = Template.parentData()
-    return Players.findOne({'_id':this._id}).filename == mediaElem.name
+    return this.filename == mediaElem.name
   }
 });
 

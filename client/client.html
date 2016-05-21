@@ -122,14 +122,27 @@
     {{/if}}
     <p>
       <label><input id="show_labels" type="checkbox" value="yes" {{labelschecked}}> Show screen labels</label><br>
-      <!--label><input id="show_setup" type="checkbox" value="yes" {{setupchecked}}> Raspberries media setup</label-->
+      <label><input id="show_setup" type="checkbox" value="yes" {{setupchecked}}> Raspberries media setup</label>
     </p>
   </div>
 </template>
 
 <template name="setupCell">
   {{#if raspberry}}
-    <input class="available" type="checkbox" {{checked}}>
+    <div class="state setup {{#if connected}}connected{{/if}}">
+      <input class="available" type="checkbox" {{checked}}>
+      {{#if mediaUnavailable}}
+        <button class="add_media">Upload</button>
+      {{else}}
+        <button class="remove_media"><small>
+          {{#if inProgress}}
+            Cancel
+          {{else}}
+            Remove
+          {{/if}}
+        </small></button>
+      {{/if}}
+    </div>
   {{/if}}
 </template>
 
