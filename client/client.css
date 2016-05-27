@@ -39,6 +39,15 @@ th.monitored.connected {
   background-color: green
 }
 
+th a {
+  text-decoration:none;
+}
+
+th .filesize {
+  opacity:0.65;
+  padding-left: 1em;
+}
+
 td.media_unavailable .state:not(.setup) {
   background-color:red !important;
   opacity: 0;
@@ -48,6 +57,7 @@ td.media_unavailable .state:not(.setup) {
 td .state {
   width:115px;
   opacity: 0.3;
+  transition: opacity 2s 0.3s;
 }
 
 td .state.setup {
@@ -84,6 +94,27 @@ td {
 td.preselected, .group_controls {
   padding:0px 0px 0px 1px;
   border: solid rgba(255,255,0,0.5) 3px;
+}
+
+button.button-media-cancel {
+  background-color:orange;
+}
+
+button.button-media-remove {
+  color:darkred;
+  border: solid 1px darkred;
+}
+
+button.button-media-remove:hover {
+  color:white;
+  background-color:darkred;
+}
+
+button.button-media-add {
+}
+
+button:hover {
+  /*cursor:pointer;*/
 }
 
 a, a:visited {

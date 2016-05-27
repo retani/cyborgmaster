@@ -74,6 +74,12 @@ Template.master.helpers({
   },
   'pairedPlayer' : function() {
     return ( this.paired ? Players.findOne({ _id: this.paired }) : null )
+  },
+  'url': function(){
+    return "http://" + mediaserver_address + "/" + mediaserver_path + this.name
+  },
+  'humansize': function(){
+    return Math.floor(this.filesize/(1024*1024)) + "M"
   }
 }); 
 
@@ -113,6 +119,9 @@ Template.master.events({
   'click .general_controls .pause':function(event){
     Meteor.call('updatePreselected', {'state':'pause'})
   },
+  'click .reload_videos': function(event) {
+    Meteor.call('reloadVideos')
+  }
 }); 
 
 Template.setupCell.helpers({
@@ -128,21 +137,32 @@ Template.setupCell.helpers({
     var mediaId = Template.parentData()._id
     var mediaKey = filename2key(mediaId)
     if (this.type != 'rpi' || !this.mediaStatus) return false
-    //console.log(this.mediaStatus, mediaKey, this.mediaStatus[mediaKey])
+    //console.log(mediaKey, this.mediaStatus[mediaKey])
     if (!this.mediaStatus[mediaKey] || !this.mediaStatus[mediaKey].available) return true
   },  
   'inProgress' : function() {
     var mediaId = Template.parentData()._id
     var mediaKey = filename2key(mediaId)
-    if (this.mediaStatus) {
-      console.log(this.mediaStatus[mediaKey].required , this.mediaStatus[mediaKey].available, mediaKey || null)
+    if (!mediaKey || !this.mediaStatus || !this.mediaStatus[mediaKey]) {
+      return false
     }
-    return (this.mediaStatus && this.mediaStatus[mediaKey] && this.mediaStatus[mediaKey].required && !this.mediaStatus[mediaKey].available)
-  }
+    //var res = (this.mediaStatus[mediaKey].progress > 0 && this.mediaStatus[mediaKey].progress < 1 )
+    var res = (this.mediaStatus[mediaKey].downloading )
+    return res
+  },
+  'scheduled' : function() {
+    var mediaId = Template.parentData()._id
+    var mediaKey = filename2key(mediaId)
+    if (!mediaKey || !this.mediaStatus || !this.mediaStatus[mediaKey]) {
+      return false
+    }
+    var res = (this.mediaStatus[mediaKey].required && !this.mediaStatus[mediaKey].available && !this.mediaStatus[mediaKey].progress )
+    return res
+  }  
 });
 
 Template.setupCell.events({
-  'click .available': function (event) {
+  'change .available': function (event) {
     var mediaElem = Template.parentData()
     if (event.target.checked) {
       Meteor.call('addMediaavail', { 'mediaId':mediaElem.name, 'playerId':this._id });
@@ -153,6 +173,7 @@ Template.setupCell.events({
   },
   'click button' : function(event) {
     var mediaElem = Template.parentData()
+    console.log(event.target + " clicked")
     if ($(event.target).hasClass("add_media")) {
       Meteor.call('setPlayerMediaStatus', { 'mediaId':mediaElem.name, 'playerId':this._id, attr: 'required', value: true });
     }
@@ -181,7 +202,17 @@ Template.tableCell.helpers({
   'checked':function(){
     var mediaElem = Template.parentData()
     return this.filename == mediaElem.name
-  }
+  },
+  'inProgress' : function() {
+    var mediaId = Template.parentData()._id
+    var mediaKey = filename2key(mediaId)
+    if (!mediaKey || !this.mediaStatus || !this.mediaStatus[mediaKey]) {
+      return false
+    }
+    //var res = (this.mediaStatus[mediaKey].progress > 0 && this.mediaStatus[mediaKey].progress < 1 )
+    var res = (this.mediaStatus[mediaKey].downloading )
+    return res
+  },  
 });
 
 Template.tableCell.events({
@@ -223,15 +254,19 @@ Template.tableCell.events({
 });
 
 Template.uploadIndicator.helpers({
-  /*'percentage': function () {
-    var mediaId = Template.parentData(3)._id
+  'percentage': function () {
+    var mediaId = Template.parentData()._id
+    if (!mediaId) return false
     var mediaKey = filename2key(mediaId)
+    if (!this.mediaStatus) return false
     var mediaItem = this.mediaStatus[mediaKey]
 
-    if (mediaItem && mediaItem.progress && mediaItem.progress < 0.99) {
-      return mediaItem.progress * 100
+    //console.log(mediaItem)
+
+    if (mediaItem && mediaItem.progress && mediaItem.progress < 1) {
+      return Math.round(mediaItem.progress * 100)
     }
-  },*/
+  },
 });
 
 Template.player.helpers({
@@ -253,16 +288,17 @@ Template.player.onCreated(function(){
 })
 
 Template.player.onRendered( function() {
-  this.subscribe('players', function(){
+  this.subscribe('players', {playerId: playerId},  function(){
     console.log("rendered player " + playerId)
     $("body").css("overflow","hidden")
     console.log(Players.find().fetch())
     var player = Players.findOne({"_id":playerId})
     var videoElem = $("video").get(0)
-    observer = Players.find({ "_id" : playerId }).observeChanges({
+    var observer = Players.find({ "_id" : playerId }).observeChanges({
       changed: function(id, doc) {
         if (doc.pingtime) {
           console.log("pingback",playerId)
+          if (typeof(videoElem) == "undefined") videoElem = $("video").get(0)
           Meteor.call('playerPingback', playerId, function (error, result) {});
         }
         if (FlowRouter.getRouteName() == "player")

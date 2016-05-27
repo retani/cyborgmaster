@@ -25,7 +25,7 @@ FlowRouter.route('/master', {
     name: "master",
     subscriptions: function(params) {
       this.register('media', Meteor.subscribe('media'));
-      this.register('players', Meteor.subscribe('players'));
+      this.register('players', Meteor.subscribe('players', {noPing:true}));
     },    
     action: function(params) {
       BlazeLayout.render("master");

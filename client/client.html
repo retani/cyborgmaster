@@ -1,5 +1,6 @@
 <head>
   <title>cyborgmaster</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 </head>
 
 <body>
@@ -88,7 +89,7 @@
     </tr>
     {{#each media}}
       <tr>
-      <th>{{name}}</th>
+      <th><a title="{{url}}" href="{{url}}" target="_blank">{{name}}</a> <tt title="{{humansize}}" class="unobstrusive filesize">{{humansize}}</tt></th>
         {{#each players}}
           <td data-media="{{../name}}" data-player="{{_id}}" class="{{#if isSelected}}selected{{/if}} {{#if isPreselected}}preselected{{/if}} {{#if mediaUnavailable}}media_unavailable{{/if}}">
             {{#if setup}}
@@ -124,25 +125,29 @@
       <label><input id="show_labels" type="checkbox" value="yes" {{labelschecked}}> Show screen labels</label><br>
       <label><input id="show_setup" type="checkbox" value="yes" {{setupchecked}}> Raspberries media setup</label>
     </p>
+    <p>
+      <!--button class="reload_videos">Reload Videos</button-->
+    </p>
   </div>
 </template>
 
 <template name="setupCell">
   {{#if raspberry}}
     <div class="state setup {{#if connected}}connected{{/if}}">
-      <input class="available" type="checkbox" {{checked}}>
+      <!--input class="available" type="checkbox" {{checked}}-->
       {{#if mediaUnavailable}}
-        <button class="add_media">Upload</button>
-      {{else}}
-        <button class="remove_media"><small>
-          {{#if inProgress}}
-            Cancel
+        {{#if inProgress}}
+          {{>uploadIndicator}}
+        {{else}}
+          {{#if scheduled}}
+            <button class="remove_media button-media-cancel"><small>Cancel</small></button>
           {{else}}
-            Remove
+            <button class="add_media button-media-add">Upload</button>
           {{/if}}
-        </small></button>
+        {{/if}}
+      {{else}}
+        <button class="remove_media button-media-remove"><small>Remove</small></button>
       {{/if}}
-      {{>uploadIndicator}}
     </div>
   {{/if}}
 </template>
@@ -165,13 +170,14 @@
     {{else}}
       <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
     {{/if}}
+    {{#if inProgress}}
+      {{>uploadIndicator}}    
+    {{/if}}
   </div>
 </template>
 
 <template name="uploadIndicator">
-  {{#if percentage}}
-    {{percentage}}%
-  {{/if}}
+  {{percentage}}%
 </template>
 
 <!--*********** player ************* -->

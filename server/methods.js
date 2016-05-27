@@ -1,4 +1,7 @@
 Meteor.methods({
+  'reloadVideos': function () {
+    console.log(publishedMedia)
+  },
   'updatePreselected' : function (set) {
     if (set.state == "play" && Players.find({ 'preselect': { $type: 2 }, 'type':'rpi', 'state':'stop' }).count() > 0) {// special case, sync raspberries
       console.log("sync rpi")
@@ -37,12 +40,17 @@ Meteor.methods({
   'setPlayerMediaStatus' : function(data) {
     var playerId = data.playerId
     var mediaId = data.mediaId
-    var attr = data.attr
-    var value = data.value
-    var set = {}
-    set["mediaStatus." + filename2key(mediaId) + "." + attr] = value
-    Players.update({_id:playerId}, { $set : set })
-    console.log("set media status on " + playerId +": " + "'" + mediaId + "'." + attr + " = " + value, set)
+    var attrs =  ( Array.isArray(data.attr) ? data.attr : [data.attr] )
+    var values = ( Array.isArray(data.value) ? data.value : [data.value] )
+    for (var i = 0; i<attrs.length; i++) {
+      var attr = attrs[i]
+      var value = values[i]
+      var set = {}
+      set["mediaStatus." + filename2key(mediaId) + "." + attr] = value
+      Players.update({_id:playerId}, { $set : set })
+      console.log("set media status on " + playerId +": " + "'" + mediaId + "'." + attr + " = " + value, set)      
+    }
+
   },
   'labels':function (show) {
     console.log("switching labels " + (show ? "on" : "off"))
@@ -50,8 +58,12 @@ Meteor.methods({
   },
   'playersPing':function(){
     Players.update({}, {$set:{'pingback':0, 'pingtime':Date.now()}},{multi:true});
+    //console.log("ping sent")
   },
   'playerPingback':function(playerId){
     Players.update({'_id':playerId},{$inc:{'pingback':1}})
+    Players.update({'_id':playerId, 'pingback':0 }, {$set:{'connected':false}}, {multi:true});
+    Players.update({'_id':playerId, 'pingback':{$gt:0} }, {$set:{'connected':true}}, {multi:true});
+    //console.log("ping received from " + playerId)
   }
 })

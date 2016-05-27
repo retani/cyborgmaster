@@ -22,25 +22,25 @@ default_players = [
   {
     _id: "r1",
     type: "rpi",
-    info: "RPi 1",
-    ips: ["192.168.0.10","192.168.0.107"],
-    ip: "192.168.0.10",
+    info: "Pat.R1",
+    ips: ["cyborgplayer1.local"],
+    ip: "cyborgplayer1.local",
     paired: "t1"
   },
   {
     _id: "r2",
     type: "rpi",
-    info: "RPi 2",
-    ips: ["192.168.0.11"],
-    ip: "192.168.0.11",
+    info: "Jes.R2",
+    ips: ["cyborgplayer2.local"],
+    ip: "cyborgplayer2.local",
     paired: "t2"
   },
   {
     _id: "r3",
     type: "rpi",
-    info: "RPi 3",
-    ips: ["192.168.0.12"],
-    ip: "192.168.0.12",
+    info: "Mar.R3",
+    ips: ["cyborgplayer3.local"],
+    ip: "cyborgplayer3.local",
     paired: "t3"
   },
   {

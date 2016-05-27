@@ -35,22 +35,38 @@ Meteor.startup(function () {
 
   Players.update({},{ $set : { 'mediaserver_address':mediaserver_address, 'mediaserver_path':mediaserver_path } }, {multi:true})  
 
-  Meteor.publish('players', function(){
-    return Players.find()
+  Meteor.publish('players', function(options){
+    var query = {}
+    var fields = {}
+    if (options) {
+      if (options.noPing) {
+        fields.pingtime = 0
+        fields.pingback = 0
+      }
+      if (options.noPingback) {
+        fields.pingback = 0
+      }
+      if (options.playerId) {
+        query._id = options.playerId
+      }
+    }
+    return Players.find(query, { fields: fields } )
   })
 });
 
 //var nodeDir = Meteor.npmRequire("node-dir")
 
-Meteor.publish('media', function() {
+publishedMedia = Meteor.publish('media', function() {
   var self = this;
   var path = local_media_path;
   var medias = fs.readdirSync(path);
   _.each(medias, function(media) {
     if(media.substr(0,1) != ".") {
+      var filesize = fs.statSync(path + "/" + media)['size']
       self.added('media', media, { 
         'url': '/media/' + media,
-        'name': media
+        'name': media,
+        'filesize': filesize
       });
     }
   });
@@ -76,20 +92,28 @@ UserStatus.events.on("connectionLogout", function(fields) {
 })
 
 pingPlayers = function(){
-  Players.update({'pingback':0}, {$set:{'connected':false}}, {multi:true});
-  Players.update({'pingback':{$gt:0}}, {$set:{'connected':true}}, {multi:true});
+  Players.update({'pingback':0 }, {$set:{'connected':false}}, {multi:true});
+  Players.update({'pingback':{$gt:0} }, {$set:{'connected':true}}, {multi:true});  
   Meteor.call('playersPing', null, function (error, result) {});
 }
-Meteor.setInterval(pingPlayers,2000)
+Meteor.setInterval(pingPlayers,5000)
 
 Players.find({ 'paired' : { $type: 2 }}).observeChanges({ // check for paired players
   changed: function (id, fields) {
+    if (fields.state ==  "play" && fields.filename) { // stop first
+      var masterPlayer = Players.findOne({_id: id})
+      Players.update({ _id : masterPlayer.paired }, { $set : { state: 'stop' } })
+    }
     if (fields.filename) {
       var masterPlayer = Players.findOne({_id: id})
       Players.update({ _id : masterPlayer.paired }, { $set : { filename: masterPlayer.filename } })
     }
     if (fields.state) {
       var masterPlayer = Players.findOne({_id: id})
+      var pairedPlayer = Players.findOne({ _id : masterPlayer.paired })
+      if (pairedPlayer.filename != masterPlayer.filename) {
+        Players.update({ _id : masterPlayer.paired }, { $set : { filename: masterPlayer.filename } })   
+      }
       Players.update({ _id : masterPlayer.paired }, { $set : { state: masterPlayer.state } })
     }    
   },
