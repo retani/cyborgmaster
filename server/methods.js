@@ -1,6 +1,10 @@
 Meteor.methods({
   'reloadVideos': function () {
-    console.log(publishedMedia)
+    console.log(publishedMedia, "saving in " + process.env.PWD)
+    fs.writeFile(process.env.PWD + '/reload.js', 'var last_reload_timestamp = "'+Date.now()+'"', function(err){
+      if (err) throw err;
+      console.log('It\'s saved!');
+    });
   },
   'updatePreselected' : function (set) {
     if (set.state == "play" && Players.find({ 'preselect': { $type: 2 }, 'type':'rpi', 'state':'stop' }).count() > 0) {// special case, sync raspberries
