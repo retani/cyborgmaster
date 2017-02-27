@@ -1,25 +1,55 @@
 default_players = [
   {
-    _id: "c1",
+    _id: "p-bonn",
     type: "screen",
-    info: "Screen 1"
+    info: "Projector Bonn"
   },
   {
-    _id: "c2",
+    _id: "p-berlin",
     type: "screen",
-    info: "Screen 2"
+    info: "Projector Berlin"
   },
   {
-    _id: "c3",
+    _id: "p-fireside",
     type: "screen",
-    info: "Screen 3"
+    info: "Projector Fireside"
   },
   {
-    _id: "c4",
+    _id: "p-rheinlobby",
     type: "screen",
-    info: "Screen 4"
+    info: "Projector Rheinlobby"
   },
   {
+    _id: "l-1",
+    type: "screen",
+    info: "Lobby Touch 1"
+  },
+  {
+    _id: "l-2",
+    type: "screen",
+    info: "Lobby Touch 2"
+  },
+  {
+    _id: "l-3",
+    type: "screen",
+    info: "Lobby Viewsonic 1"
+  },
+  {
+    _id: "l-4",
+    type: "screen",
+    info: "Lobby Viewsonic 2"
+  },
+    {
+    _id: "l-5",
+    type: "screen",
+    info: "Lobby Viewsonic 3"
+  },
+    {
+    _id: "l-6",
+    type: "screen",
+    info: "Lobby Viewsonic 4"
+  },
+  /*  {
     _id: "r1",
     type: "rpi",
     info: "Pat.R1",
@@ -61,4 +91,5 @@ default_players = [
     //specialPreload: true,
     info: "Tab 3",
   },  
+  */
 ]

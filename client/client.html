@@ -89,7 +89,7 @@
     </tr>
     {{#each media}}
       <tr>
-      <th><a title="{{url}}" href="{{url}}" target="_blank">{{name}}</a> <tt title="{{humansize}}" class="unobstrusive filesize">{{humansize}}</tt></th>
+      <th><input class="check_line" type="checkbox" {{linechecked}}> <a title="{{url}}" href="{{url}}" target="_blank">{{name}}</a> <tt title="{{humansize}}" class="unobstrusive filesize">{{humansize}}</tt></th>
         {{#each players}}
           <td data-media="{{../name}}" data-player="{{_id}}" class="{{#if isSelected}}selected{{/if}} {{#if isPreselected}}preselected{{/if}} {{#if mediaUnavailable}}media_unavailable{{/if}}">
             {{#if setup}}
@@ -124,6 +124,7 @@
     <p>
       <label><input id="show_labels" type="checkbox" value="yes" {{labelschecked}}> Show screen labels</label><br>
       <label><input id="show_setup" type="checkbox" value="yes" {{setupchecked}}> Raspberries media setup</label>
+      <label id="play_delay_label"><input id="play_delay" type="checkbox" value="yes" {{playdelaychecked}}> Auto Safe Play Delay</label>
     </p>
     <p>
       <button class="reload_videos">Restart (Reload Videos)</button>
@@ -186,7 +187,19 @@
   {{#with player}}
     <div id="player" data-state="{{state}}">
       {{#if show_info}}
-      <h1 class="info">{{info}}</h1>
+      <h1 class="info">{{info}}<br><small>{{additionalInfo}}</small></h1>
+      {{/if}}
+      {{#if show_list}}
+        <ul class="medialist">
+          {{#each list}}
+            <li>
+                <span class="indicator {{#if isCurrentMedia}}currentMedia{{/if}}">
+                  {{#if isCurrentMedia}}&#9654;{{else}}&#9655;{{/if}}
+                </span>
+              <a target="_playmaster_manual_play" href="{{mediaURL _id}}">{{name}}</a>
+            </li>
+          {{/each}}
+        </ul>
       {{/if}}
       <video width="1280" height="720" preload="auto">
         video not supported

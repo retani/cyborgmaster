@@ -34,6 +34,10 @@ Meteor.methods({
     Players.update({_id:playerId}, { $set : {'state':state} })
     return state
   },
+  'setGlobal': function(data) {
+    console.log("set global "+data.name+" as "+data.value)
+    Globals.upsert({'name':data.name},{ $set : {'value' : data.value}})
+  },
   'setFilename': function (data) {
     console.log("receiving media selection " + data.filename + " from " + data.playerId)
     var playerId = data.playerId
@@ -54,12 +58,16 @@ Meteor.methods({
       Players.update({_id:playerId}, { $set : set })
       console.log("set media status on " + playerId +": " + "'" + mediaId + "'." + attr + " = " + value, set)      
     }
-
   },
   'labels':function (show) {
     console.log("switching labels " + (show ? "on" : "off"))
     Players.update({},{ $set : {'show_labels' : show}},{multi:true})
   },
+  'playDelay':function (value) {
+    console.log("switching play_delay " + (value ? "on" : "off"))
+    Meteor.call('setGlobal', { name: 'play_delay', value: value})
+    //Players.update({},{ $set : {'play_delay' : value}},{multi:true})
+  },  
   'playersPing':function(){
     Players.update({}, {$set:{'pingback':0, 'pingtime':Date.now()}},{multi:true});
     //console.log("ping sent")

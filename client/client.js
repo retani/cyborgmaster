@@ -44,7 +44,21 @@ Template.master.helpers({
   },
   'setupchecked': function(){
     return { "checked": (Session.get('setup') ? "checked" : null)}
-  },  
+  },
+  'linechecked': function(){
+    var allchecked = true;
+    var media = this.name;
+    var players = Players.find({}, { sort:{"_id":1} })
+    players.forEach(function (player) {
+      if (player.preselect != media) {
+        allchecked = false;
+      }
+    });
+    return {"checked": (allchecked ? "checked" : null)}
+  },      
+  'playdelaychecked': function(){
+    return { "checked": (Globals.findOne({'name':'play_delay'}).value==true ? "checked" : null)}
+  },      
   'muted':function(){
     return this.volume == 0
   },
@@ -92,6 +106,10 @@ Template.master.events({
   'click #show_setup': function(event){
     Session.set('setup', event.target.checked);
   },
+  'click #play_delay': function(event){
+    var checked = event.target.checked
+    Meteor.call('playDelay', checked, function (error, result) {});
+  },  
   'click .mute':function(event){
     Players.update({'_id':this._id}, {$set : {"volume":0}});
   },
@@ -109,6 +127,19 @@ Template.master.events({
   'click .prepare_clear':function(event){
     Meteor.call('updatePreselected', { 'preselect':null });
   },
+  'change .check_line':function(event){
+    var allchecked = true;
+    var media = this.name;
+    var players = Players.find({}, { sort:{"_id":1} })
+    players.forEach(function (player) {
+      if (player.preselect != media) {
+        allchecked = false;
+      }
+    });
+    players.forEach(function (doc) {
+      Players.update({'_id':doc._id}, { $set : { 'preselect': ( allchecked ? null : media ) } })
+    });
+  },  
   'click .general_controls .play':function(event){
     console.log("play multi")
     Meteor.call('updatePreselected', {'state':'play'})
@@ -120,9 +151,14 @@ Template.master.events({
     Meteor.call('updatePreselected', {'state':'pause'})
   },
   'click .reload_videos': function(event) {
+    $("body").css("opacity","0.1")
     Meteor.call('reloadVideos')
   }
 }); 
+
+Template.master.onCreated(function(){
+  this.subscribe('globals');
+})
 
 Template.setupCell.helpers({
   'checked': function () {
@@ -277,14 +313,76 @@ Template.player.helpers({
     return Players.findOne({"_id":playerId})
   },
   'info': function () {
-    return Players.findOne({"_id":playerId}).info
+    var player = Players.findOne({"_id":playerId})
+    return player.info
+  },
+  'additionalInfo': function() {
+    var play_delay = Globals.findOne({name:"play_delay"})
+    if (play_delay && play_delay.value==true ) {
+      //TimeSync.serverTime()
+      return "round trip: " + TimeSync.roundTripTime() + "ms"
+    }
   },
   'show_info': function() {
     return Players.findOne({"_id":playerId}).show_labels
+  },
+  'show_list': function() {
+    var player = Players.findOne({"_id":playerId})
+    if (player.type == "screen") {
+      return typeof(player)=="undefined" || player.state == "stop"
+    }
+  },
+  'list': function() {
+    return Media.find()
+  },
+  'mediaURL':function(mediaId){
+    var media = Media.findOne(mediaId)
+    return "http://" + mediaserver_address + "/" + mediaserver_path + media.name
+  },
+  'isCurrentMedia' : function() {
+    var player = Players.findOne({"_id":playerId})
+    return this.name == player.filename
   }
 });
 
+Template.player.events({
+  'ended #player video' : function() {
+    Players.update({"_id":playerId}, { $set : {"state":"stop"}})
+  },
+  'click .medialist .indicator' : function () { /*.currentMedia*/
+    var player = Players.findOne({"_id":playerId})
+    var media = this
+    if (player.state != "play") {
+      if (media.name !== player.filename) {
+        Meteor.call('setFilename', { playerId: playerId, filename: media.name }, function() {
+          Meteor.call('setState', { playerId: playerId, state: "play" })  
+        })
+      }
+      else {
+        Meteor.call('setState', { playerId: playerId, state: "play" })
+      }
+    }
+  }
+})
+
 Template.player.onCreated(function(){
+  template = this
+  this.subscribe('globals', function(){
+    template.autorun(function(){
+      var play_delay = Globals.findOne({name:"play_delay"})
+      //var show_labels = Globals.findOne({name:"show_labels"}) // TODO
+      if (play_delay && play_delay.value==true) {
+        syncinterval = Meteor.setInterval(function(){
+          TimeSync.resync()
+        }, 5000)      
+      }
+      else {
+        if (typeof(syncinterval)!="undefined") {
+          Meteor.clearInterval(syncinterval)
+        }
+      }
+    })
+  });  
 })
 
 Template.player.onRendered( function() {
@@ -297,13 +395,14 @@ Template.player.onRendered( function() {
     var observer = Players.find({ "_id" : playerId }).observeChanges({
       changed: function(id, doc) {
         if (doc.pingtime) {
-          console.log("pingback",playerId)
+          //console.log("pingback",playerId)
           if (typeof(videoElem) == "undefined") videoElem = $("video").get(0)
           Meteor.call('playerPingback', playerId, function (error, result) {});
         }
         if (FlowRouter.getRouteName() == "player")
-        console.log(doc);
+        //console.log(doc);
         if (doc.filename) {
+          TimeSync.resync();
           if (player.type == "screen")
             videoElem.src = "http://" + mediaserver_address + "/" + mediaserver_path + doc.filename
           else {
@@ -318,7 +417,18 @@ Template.player.onRendered( function() {
             mobileBrowserPreload("abort", videoElem)
           }
           if (doc.state == "play") {
-            videoElem.play()
+            var play_delay = Globals.findOne({name:"play_delay"})
+            if (play_delay && play_delay.value == true) {
+              TimeSync.resync();
+              Meteor.setTimeout(function(){ videoElem.play() 
+                console.log("play delayed", TimeSync.roundTripTime()/2)
+                Meteor.setTimeout(function(){ videoElem.play() }, 1000-(TimeSync.roundTripTime()/2)) // compensate
+              }, 1000) // wait for resync to finish
+              
+            }
+            else {
+              videoElem.play()
+            }
           }
           else if (doc.state == "pause") {
             videoElem.pause()
@@ -334,9 +444,6 @@ Template.player.onRendered( function() {
         }
       }
     });
-    videoElem.onended = function() {
-      Players.update({"_id":playerId}, { $set : {"state":"stop"}})
-    };
     Players.update({"_id":playerId}, { $set : { "state":"stop", "filename":null } } ) // reset
   })
 });

@@ -33,6 +33,13 @@ Meteor.startup(function () {
   Globals.remove({})
   Globals.insert({"name":"show_labels", "value":true})
 
+  var play_delay_default = true;
+  if (Globals.find({'name':'play_delay'}).count() == 0) {
+    //Globals.insert({"name":"play_delay", "value":play_delay_default})
+    Meteor.call('playDelay', play_delay_default, function (error, result) {});
+  }
+  
+
   Players.update({},{ $set : { 'mediaserver_address':mediaserver_address, 'mediaserver_path':mediaserver_path } }, {multi:true})  
 
   Meteor.publish('players', function(options){
@@ -53,6 +60,10 @@ Meteor.startup(function () {
     return Players.find(query, { fields: fields } )
   })
 });
+
+Meteor.publish('globals', function(options){
+  return Globals.find()
+})
 
 //var nodeDir = Meteor.npmRequire("node-dir")
 

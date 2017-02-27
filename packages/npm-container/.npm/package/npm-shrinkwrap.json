@@ -2,18 +2,28 @@
   "dependencies": {
     "node-dir": {
       "version": "0.1.9",
+      "resolved": "https://registry.npmjs.org/node-dir/-/node-dir-0.1.9.tgz",
+      "from": "node-dir@0.1.9",
       "dependencies": {
         "minimatch": {
           "version": "2.0.10",
+          "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-2.0.10.tgz",
+          "from": "minimatch@2.0.10",
           "dependencies": {
             "brace-expansion": {
               "version": "1.1.0",
+              "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.0.tgz",
+              "from": "brace-expansion@1.1.0",
               "dependencies": {
                 "balanced-match": {
-                  "version": "0.2.0"
+                  "version": "0.2.0",
+                  "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-0.2.0.tgz",
+                  "from": "balanced-match@0.2.0"
                 },
                 "concat-map": {
-                  "version": "0.0.1"
+                  "version": "0.0.1",
+                  "resolved": "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz",
+                  "from": "concat-map@0.0.1"
                 }
               }
             }
