@@ -1,54 +1,59 @@
 default_players = [
   {
-    _id: "p-bonn",
+    _id: "bonn",
     type: "screen",
-    info: "Projector Bonn"
+    info: "Session Bonn"
   },
   {
-    _id: "p-berlin",
+    _id: "berlin",
     type: "screen",
-    info: "Projector Berlin"
+    info: "Session Berlin"
   },
   {
-    _id: "p-fireside",
+    _id: "fireside",
     type: "screen",
-    info: "Projector Fireside"
+    info: "Session Fireside"
   },
   {
-    _id: "p-rheinlobby",
+    _id: "rheinlobby",
     type: "screen",
-    info: "Projector Rheinlobby"
+    info: "Session Rheinlobby"
   },
   {
     _id: "l-1",
     type: "screen",
-    info: "Lobby Touch 1"
+    info: "Lobby 1 (Touch)"
   },
   {
     _id: "l-2",
     type: "screen",
-    info: "Lobby Touch 2"
+    info: "Lobby 2 (Touch)"
   },
   {
     _id: "l-3",
     type: "screen",
-    info: "Lobby Viewsonic 1"
+    info: "Lobby 3"
   },
   {
     _id: "l-4",
     type: "screen",
-    info: "Lobby Viewsonic 2"
+    info: "Lobby 4"
   },
     {
     _id: "l-5",
     type: "screen",
-    info: "Lobby Viewsonic 3"
+    info: "Lobby 5 (Intel)"
   },
     {
     _id: "l-6",
     type: "screen",
-    info: "Lobby Viewsonic 4"
+    info: "Lobby 6 (Intel)"
   },
+    {
+    _id: "l-7",
+    type: "screen",
+    info: "Lobby 7 (Intel)"
+  },  
   /*  {
     _id: "r1",
     type: "rpi",

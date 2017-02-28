@@ -30,7 +30,7 @@ Template.playerslist.helpers({
 
 Template.master.helpers({
   players: function () {
-    return Players.find({}, { sort:{"_id":1} })
+    return Players.find({}, { sort:{"info":1} })
   },
   'media': function () {
     var files = Media.find({},{ sort:{"name":1} })
