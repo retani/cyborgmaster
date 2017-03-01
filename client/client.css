@@ -95,6 +95,14 @@ td.preselected, .group_controls {
   border: solid rgba(255,255,0,0.5) 3px;
 }
 
+label.label-loop * {
+  margin:0;
+}
+
+label.label-loop small {
+  font-size:65%;
+}
+
 button.button-media-cancel {
   background-color:orange;
 }

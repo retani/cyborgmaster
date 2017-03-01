@@ -57,7 +57,8 @@ Template.master.helpers({
     return {"checked": (allchecked ? "checked" : null)}
   },      
   'playdelaychecked': function(){
-    return { "checked": (Globals.findOne({'name':'play_delay'}).value==true ? "checked" : null)}
+    var play_delay = Globals.findOne({'name':'play_delay'})
+    return { "checked": (typeof(play_delay) != "undefined" && play_delay.value==true ? "checked" : null)}
   },      
   'muted':function(){
     return this.volume == 0
@@ -239,6 +240,11 @@ Template.tableCell.helpers({
     var mediaElem = Template.parentData()
     return this.filename == mediaElem.name
   },
+  'loopChecked':function(){
+    var mediaElem = Template.parentData()
+    var player = this
+    return ( player.loop && player.loop.indexOf(mediaElem._id) >= 0 ? { 'checked' : 'checked' } : null )
+  },  
   'inProgress' : function() {
     var mediaId = Template.parentData()._id
     var mediaKey = filename2key(mediaId)
@@ -278,6 +284,22 @@ Template.tableCell.events({
   'click .stop' : function(event){
     var mediaElem = Template.parentData()
     Players.update({'_id':this._id},{$set :{'filename':mediaElem.name,'state':'stop'}})
+  },
+  'click .loop' : function(event) {
+    var mediaElem = Template.parentData()
+    player = this
+    if (!player.loop) player.loop = []
+    if (player.loop.indexOf(mediaElem._id) >= 0) { 
+      Players.update({'_id':this._id},{$pull :{'loop': mediaElem._id}})
+    } 
+    else {
+      if( Object.prototype.toString.call( this.loop ) === '[object Array]' ) {
+        Players.update({'_id':this._id},{$push :{'loop': mediaElem._id}})
+      }
+      else {
+        Players.update({'_id':this._id},{$set :{'loop': [] }})
+      }
+    }
   },
   'click .preselect' : function(event){
     var mediaElem = Template.parentData()
@@ -342,6 +364,12 @@ Template.player.helpers({
   'isCurrentMedia' : function() {
     var player = Players.findOne({"_id":playerId})
     return this.name == player.filename
+  },
+  'loop': function() {
+    var player = Players.findOne({"_id":playerId})
+    var media = Media.findOne({"name":player.filename})
+    console.log(player, Array.isArray(player.loop))
+    return ( typeof(media) != "undefined" && Array.isArray(player.loop) && player.loop.indexOf(media._id) >= 0 ? {'loop':'loop'} : null )
   }
 });
 

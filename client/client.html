@@ -173,6 +173,8 @@
     {{/if}}
     {{#if inProgress}}
       {{>uploadIndicator}}    
+    {{else}}
+      <label class="label-loop"><small>lo<input type="checkbox" class="loop" title="loop" {{loopChecked}}>p</small></label>
     {{/if}}
   </div>
 </template>
@@ -201,7 +203,7 @@
           {{/each}}
         </ul>
       {{/if}}
-      <video width="1920" height="1080" preload="auto">
+      <video width="1920" height="1080" preload="auto" {{loop}}>
         video not supported
       </video>
     </div>
