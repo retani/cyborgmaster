@@ -328,7 +328,7 @@ Template.player.helpers({
   },
   'show_list': function() {
     var player = Players.findOne({"_id":playerId})
-    if (player.type == "screen") {
+    if (player.type == "screen" && player.manual == "allow") {
       return typeof(player)=="undefined" || player.state == "stop"
     }
   },

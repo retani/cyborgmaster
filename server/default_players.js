@@ -2,22 +2,26 @@ default_players = [
   {
     _id: "bonn",
     type: "screen",
-    info: "Session Bonn"
+    info: "Session Bonn",
+    manual: "allow",
   },
   {
     _id: "berlin",
     type: "screen",
-    info: "Session Berlin"
+    info: "Session Berlin",
+    manual: "allow",
   },
   {
     _id: "fireside",
     type: "screen",
-    info: "Session Fireside"
+    info: "Session Fireside",
+    manual: "allow",
   },
   {
     _id: "rheinlobby",
     type: "screen",
-    info: "Session Rheinlobby"
+    info: "Session Rheinlobby",
+    manual: "allow",
   },
   {
     _id: "l-1",
