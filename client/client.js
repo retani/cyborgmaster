@@ -392,7 +392,7 @@ Template.player.onRendered( function() {
     console.log(Players.find().fetch())
     var player = Players.findOne({"_id":playerId})
     var videoElem = $("video").get(0)
-    var observer = Players.find({ "_id" : playerId }).observeChanges({
+    observer = Players.find({ "_id" : playerId }).observeChanges({
       changed: function(id, doc) {
         if (doc.pingtime) {
           //console.log("pingback",playerId)
