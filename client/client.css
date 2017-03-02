@@ -189,6 +189,13 @@ a, a:visited {
   opacity: 0.1;
 }
 
+#player .loopimage {
+  position: absolute;
+  top:0;
+  left:0;
+  width: 100%;
+}
+
 #player .medialist:hover {
   opacity: 1;
 }

@@ -187,7 +187,10 @@
 
 <template name="player">
   {{#with player}}
-    <div id="player" data-state="{{state}}">
+    <div id="player" data-state="{{state}}" class="{{#if isLooping}}looping{{/if}}">
+      {{#if isLooping}}
+        <img class="loopimage" src="/loopimage.png">
+      {{/if}}
       {{#if show_info}}
       <h1 class="info">{{info}}<br><small>{{additionalInfo}}</small></h1>
       {{/if}}
