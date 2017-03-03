@@ -368,15 +368,23 @@ Template.player.helpers({
   'loop': function() {
     var player = Players.findOne({"_id":playerId})
     var media = Media.findOne({"name":player.filename})
-    console.log(player, Array.isArray(player.loop))
     return ( typeof(media) != "undefined" && Array.isArray(player.loop) && player.loop.indexOf(media._id) >= 0 ? {'loop':'loop'} : null )
   },
   'isLooping': function() {
     var player = Players.findOne({"_id":playerId})
     var media = Media.findOne({"name":player.filename})
-    console.log(player, Array.isArray(player.loop))
     return typeof(media) != "undefined" && Array.isArray(player.loop) && player.loop.indexOf(media._id) >= 0
-  }  
+  },
+  'iframe' : function() {
+    var player = Players.findOne({"_id":playerId})
+    var media = Media.findOne({"name":player.filename})
+    return typeof(media)!="undefined" && media.target == "iframe"
+  },  
+  'iframeURL' : function() {
+    var player = Players.findOne({"_id":playerId})
+    var media = Media.findOne({"name":player.filename})
+    return typeof(media)!="undefined" && media.url
+  }
 });
 
 Template.player.events({

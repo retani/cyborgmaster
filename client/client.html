@@ -187,6 +187,9 @@
 
 <template name="player">
   {{#with player}}
+    {{#if iframe}}
+      <iframe class="overlay" src="{{iframeURL}}"></iframe>
+    {{/if}}
     <div id="player" data-state="{{state}}" class="{{#if isLooping}}looping{{/if}}">
       {{#if isLooping}}
         <img class="loopimage" src="/loopimage.png">

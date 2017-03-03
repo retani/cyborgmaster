@@ -74,10 +74,19 @@ publishedMedia = Meteor.publish('media', function() {
   _.each(medias, function(media) {
     if(media.substr(0,1) != ".") {
       var filesize = fs.statSync(path + "/" + media)['size']
+      var target = "video"
+      if (media.split('.').pop() == "url") {
+        var url = fs.readFileSync(path + '/' + media, 'utf8');
+        target = "iframe"
+      }
+      else {
+        var url = '/media/' + media
+      }
       self.added('media', media, { 
-        'url': '/media/' + media,
+        'url': url,
         'name': media,
-        'filesize': filesize
+        'filesize': filesize,
+        'target' : target
       });
     }
   });
