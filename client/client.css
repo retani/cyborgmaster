@@ -92,7 +92,7 @@ td {
 
 td.preselected, .group_controls {
   padding:0px 0px 0px 1px;
-  border: solid rgba(255,255,0,0.5) 3px;
+  border: solid rgba(255,255,0,0.9) 3px;
 }
 
 label.label-loop * {
