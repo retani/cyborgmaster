@@ -63,6 +63,9 @@ Template.master.helpers({
   'muted':function(){
     return this.volume == 0
   },
+  'streamsExist':function(){
+    return Players.find({stream:true}).count() > 0
+  },
   'areSelectedPlayersStopped':function(){
     return Players.find({ 'preselect': { $type: 2 }, 'state':'stop'}).count() > 0
   },
@@ -119,6 +122,14 @@ Template.master.events({
   },
   'change .volume':function(event){
     Players.update({'_id':this._id}, {$set : {"volume":event.target.value}});
+  },  
+  'click .stream_player_controls .play':function(event){
+    console.log("play stream", this);
+    Players.update({'_id':this._id}, {$set : {"streaming":true}});
+  },
+  'click .stream_player_controls .stop':function(event){
+    console.log("stop stream", this);
+    Players.update({'_id':this._id}, {$set : {"streaming":false}});
   },  
   'click .prepare_select':function(event){
     Players.find({ 'preselect': { $type: 2 }}).forEach(function (doc) {
@@ -384,7 +395,10 @@ Template.player.helpers({
     var player = Players.findOne({"_id":playerId})
     var media = Media.findOne({"name":player.filename})
     return typeof(media)!="undefined" && media.url
-  }
+  },
+  'streamsExist':function(){
+    return Players.find({stream:true}).count() > 0
+  },  
 });
 
 Template.player.events({
@@ -433,25 +447,71 @@ Template.player.onRendered( function() {
     $("body").css("overflow","hidden")
     console.log(Players.find().fetch())
     var player = Players.findOne({"_id":playerId})
-    var videoElem = $("video").get(0)
+    var videoElem = $("#video").get(0)
+
+    SimpleWebRTC_onload = function(){
+      webrtc = new SimpleWebRTC({
+          // the id/element dom element that will hold "our" video
+          localVideoEl: 'own_video',
+          // the id/element dom element that will hold remote videos
+          remoteVideosEl: 'stream_video_container',
+          // immediately ask for camera access
+          autoRequestMedia: true,
+          //url: 'https://hmbp:8443/'
+      });
+
+      webrtc.on('videoAdded', function (elem, peer) {
+        var incomingPlayer = Players.findOne({streamId: peer.id})
+        if (typeof incomingPlayer != "undefined" && typeof currentStream != "undefined") {
+          var incomingPlayerId = incomingPlayer._id
+          if (incomingPlayerId != currentStream) {
+            console.log("cancel incoming stream")
+          }
+        }
+      })
+
+
+      // we have to wait until it's ready
+      webrtc.on('readyToCall', function (streamId) {
+        console.log(streamId);
+        Meteor.call('setStreamId', { playerId: playerId, streamId: streamId })
+        webrtc.createRoom(playerId, function(){
+          webrtc.joinRoom(playerId);
+        });
+        
+        console.log("streaming to: " + playerId)
+      });
+    }
+
     observer = Players.find({ "_id" : playerId }).observeChanges({
       changed: function(id, doc) {
         if (doc.pingtime) {
           //console.log("pingback",playerId)
-          if (typeof(videoElem) == "undefined") videoElem = $("video").get(0)
+          if (typeof(videoElem) == "undefined") videoElem = $("#video").get(0)
           Meteor.call('playerPingback', playerId, function (error, result) {});
         }
         if (FlowRouter.getRouteName() == "player")
         //console.log(doc);
         if (doc.filename) {
           TimeSync.resync();
-          if (player.type == "screen")
-            videoElem.src = "http://" + mediaserver_address + "/" + mediaserver_path + doc.filename
-          else {
-            videoElem.src = "http://localhost/" + doc.filename
-          }
-          if (player.specialPreload && !doc.state) {
-            mobileBrowserPreload("init", videoElem)
+          if (doc.filename.indexOf('stream:')===0) {
+            currentStream = doc.filename.substr('stream:'.length);
+            if (typeof currentRoom != "undefined") {
+              console.log("leaving stream: " + currentRoom)
+              webrtc.leaveRoom(currentRoom);
+            }
+            console.log("start receiving stream: " + currentStream);
+            currentRoom = currentStream;
+            webrtc.joinRoom(currentStream);
+          } else {
+            if (player.type == "screen")
+              videoElem.src = "http://" + mediaserver_address + "/" + mediaserver_path + doc.filename
+            else {
+              videoElem.src = "http://localhost/" + doc.filename
+            }
+            if (player.specialPreload && !doc.state) {
+              mobileBrowserPreload("init", videoElem)
+            }
           }
         }
         if (doc.state) {
@@ -478,6 +538,7 @@ Template.player.onRendered( function() {
           else if (doc.state == "stop") {
             videoElem.pause()
             videoElem.currentTime = 0
+            if (webrtc) webrtc.pauseVideo();
           }
         }
         if (typeof doc.volume != "undefined") {

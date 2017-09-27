@@ -77,6 +77,7 @@ modules-runtime@0.6.3
 mongo@1.1.7
 mongo-id@1.0.4
 mongo-livedata@1.0.12
+nourharidy:ssl@0.2.2
 npm-bcrypt@0.8.5
 npm-container@1.2.0
 npm-mongo@1.4.43

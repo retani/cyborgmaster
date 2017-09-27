@@ -1,5 +1,37 @@
 default_players = [
   {
+    _id: "streamer1",
+    type: "screen",
+    info: "Streamer 1",
+    manual: "disallow",
+    stream: true,
+  },
+  {
+    _id: "streamer2",
+    type: "screen",
+    info: "Streamer 2",
+    manual: "disallow",
+    stream: true,
+  },
+  {
+    _id: "streamer3",
+    type: "screen",
+    info: "Streamer 3",
+    manual: "disallow",
+    stream: true,
+  },  
+  {
+    _id: "normal1",
+    type: "screen",
+    info: "Normal 2",
+    manual: "disallow",
+  },
+
+
+
+
+/*
+  {
     _id: "bonn",
     type: "screen",
     info: "Session Bonn",
@@ -58,6 +90,10 @@ default_players = [
     type: "screen",
     info: "Lobby 7 (Intel)"
   },  
+*/
+
+
+
   /*  {
     _id: "r1",
     type: "rpi",

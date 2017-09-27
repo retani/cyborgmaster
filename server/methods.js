@@ -34,6 +34,13 @@ Meteor.methods({
     Players.update({_id:playerId}, { $set : {'state':state} })
     return state
   },
+  'setStreamId': function (data) {
+    console.log("receiving streamId " + data.streamId + " from " + data.playerId)
+    var playerId = data.playerId
+    var streamId = data.streamId
+    Players.update({_id:playerId}, { $set : {'streamId':streamId} })
+    return streamId
+  },
   'setGlobal': function(data) {
     console.log("set global "+data.name+" as "+data.value)
     Globals.upsert({'name':data.name},{ $set : {'value' : data.value}})

@@ -84,6 +84,15 @@
           {{else}}
             <input class="volume" type="range" min="0" max="1" step="0.1" value={{volume}}>
           {{/if}}
+          {{#if streamsExist}}
+            <div class="stream_player_controls">
+              {{#if stream}}
+                stream->{{_id}}
+                <!--button class="play"><i class="fa fa-play"></i></button>
+                <button- class="stop"><i class="fa fa-stop"></i></button-->
+              {{/if}}
+            </div>
+          {{/if}}
         </th>
       {{/each}}
     </tr>
@@ -209,9 +218,18 @@
           {{/each}}
         </ul>
       {{/if}}
-      <video width="1920" height="1080" preload="auto" {{loop}}>
+      <video id="video" width="1920" height="1080" preload="auto" {{loop}}>
         video not supported
       </video>
+      {{#if streamsExist}}
+      <div id="stream_video_container" autoplay width="1920" height="1080" preload="auto"></div>
+        {{#if stream}}
+          <video id="own_video" autoplay width="1920" height="1080" preload="auto"></video>
+        {{/if}}
+      {{/if}}
     </div>
+    {{#if stream}}
+      <script onload="SimpleWebRTC_onload()" src="/SimpleWebRTC.js" ></script>
+    {{/if}}
   {{/with}}
 </template>

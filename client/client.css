@@ -54,6 +54,10 @@ td.media_unavailable .state:not(.setup) {
   pointer-events:none;
 }
 
+th .stream_player_controls {
+  min-height: 1rem;
+}
+
 td .state {
   /*width:115px;*/
   opacity: 0.3;
@@ -165,6 +169,29 @@ a, a:visited {
   max-width: 100vw;
   margin:0;
   padding:0;
+}
+
+#player #own_video {
+  width: 12vw;
+  height: 12vh;
+  position: fixed;
+  right: 2vw;
+  top: 2vh;
+  visibility: visible;
+}
+
+#player #stream_video_container {
+  width:100%;
+  height: 100vh;
+  max-width: 100vw;
+  margin:0;
+  padding:0;
+  position: fixed;
+  top:0;
+  left:0;
+}
+#player #stream_video_container video {
+visibility: visible !important;
 }
 
 #player[data-state=stop] {

@@ -90,9 +90,24 @@ publishedMedia = Meteor.publish('media', function() {
       });
     }
   });
+  // add streams
+  var streamPlayers = Players.find({stream: true}).fetch();
+  _.each(streamPlayers, function(player){
+    console.log("adding stream")
+    self.added('media', player._id, { 
+      'url': null,
+      'name': 'stream:'+player._id,
+      'filesize': 0,
+      'target' : "video",
+    });    
+  })
   this.ready();
 });
 
+if (Players.find({stream:true}).count() > 0) {
+  console.log("requires SSL connections because of stream enabled players");
+  SSL('/Users/holger/Documents/Projekte/staatenlos/cyborgmaster/private/hmbp.local-selfsigned.key','/Users/holger/Documents/Projekte/staatenlos/cyborgmaster/private/hmbp.local-selfsigned.cert', 443);
+}
 
 Meteor.publish("connections", function() {
   this.ready()
