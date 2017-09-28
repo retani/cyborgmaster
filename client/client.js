@@ -458,30 +458,40 @@ Template.player.onRendered( function() {
           // immediately ask for camera access
           autoRequestMedia: true,
           //url: 'https://hmbp:8443/'
+          media: { video: player.stream, audio: false}
       });
 
       webrtc.on('videoAdded', function (elem, peer) {
-        var incomingPlayer = Players.findOne({streamId: peer.id})
-        if (typeof incomingPlayer != "undefined" && typeof currentStream != "undefined") {
-          var incomingPlayerId = incomingPlayer._id
-          if (incomingPlayerId != currentStream) {
-            console.log("cancel incoming stream")
-          }
-        }
+        // hide all except desired
+        console.log("added video")
+        toggleStreamVideos()
       })
 
 
       // we have to wait until it's ready
       webrtc.on('readyToCall', function (streamId) {
-        console.log(streamId);
         Meteor.call('setStreamId', { playerId: playerId, streamId: streamId })
-        webrtc.createRoom(playerId, function(){
-          webrtc.joinRoom(playerId);
+        webrtc.joinRoom("playmaster", function(){
+          console.log("joined")
+        });
+        webrtc.createRoom("playmaster", function(){
+          webrtc.joinRoom("playmaster", function(){
+            console.log("joined")
+          });
         });
         
-        console.log("streaming to: " + playerId)
+        console.log("streaming to: playmaster")
       });
     }
+
+    streamObserver = Players.find().observeChanges({
+      changed: function(id, doc) {
+        if (doc.filename == "stream:"+playerId) {
+          console.log("someone plays me")
+          webrtc.joinRoom("playmaster")
+        }
+      }
+    })
 
     observer = Players.find({ "_id" : playerId }).observeChanges({
       changed: function(id, doc) {
@@ -496,14 +506,11 @@ Template.player.onRendered( function() {
           TimeSync.resync();
           if (doc.filename.indexOf('stream:')===0) {
             currentStream = doc.filename.substr('stream:'.length);
-            if (typeof currentRoom != "undefined") {
-              console.log("leaving stream: " + currentRoom)
-              webrtc.leaveRoom(currentRoom);
-            }
-            console.log("start receiving stream: " + currentStream);
-            currentRoom = currentStream;
-            webrtc.joinRoom(currentStream);
+            console.log("now streaming " + currentStream)
+            toggleStreamVideos()
           } else {
+            currentStream = undefined;
+            toggleStreamVideos()
             if (player.type == "screen")
               videoElem.src = "http://" + mediaserver_address + "/" + mediaserver_path + doc.filename
             else {
@@ -538,7 +545,7 @@ Template.player.onRendered( function() {
           else if (doc.state == "stop") {
             videoElem.pause()
             videoElem.currentTime = 0
-            if (webrtc) webrtc.pauseVideo();
+            // if (webrtc) webrtc.pauseVideo();
           }
         }
         if (typeof doc.volume != "undefined") {
@@ -550,6 +557,21 @@ Template.player.onRendered( function() {
     Players.update({"_id":playerId}, { $set : { "state":"stop", "filename":null } } ) // reset
   })
 });
+
+toggleStreamVideos = function() {
+  if (typeof currentStream != "undefined") {
+    var goodStreamId = Players.findOne({_id: currentStream}).streamId
+  }
+  var vids = document.querySelectorAll('#stream_video_container video')
+  console.log("toggle video streams")
+  for (var i = 0, len = vids.length; i < len; i++) {
+    if (vids[i].id.indexOf(goodStreamId) === 0) {
+      vids[i].style.display = "block"
+    } else {
+      vids[i].style.display = "none"
+    }
+  }  
+}
 
 mobileBrowserPreloadActive = false
 mobileBrowserPreload = function(action, videoElem) {

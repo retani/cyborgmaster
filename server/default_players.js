@@ -23,8 +23,9 @@ default_players = [
   {
     _id: "normal1",
     type: "screen",
-    info: "Normal 2",
+    info: "Normal 1",
     manual: "disallow",
+    stream: false,
   },
 
 
