@@ -1,35 +1,44 @@
 {
   "dependencies": {
+    "babel-runtime": {
+      "version": "6.26.0",
+      "resolved": "https://registry.npmjs.org/babel-runtime/-/babel-runtime-6.26.0.tgz",
+      "from": "babel-runtime@6.26.0"
+    },
+    "balanced-match": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-1.0.0.tgz",
+      "from": "balanced-match@>=1.0.0 <2.0.0"
+    },
+    "brace-expansion": {
+      "version": "1.1.8",
+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.8.tgz",
+      "from": "brace-expansion@>=1.0.0 <2.0.0"
+    },
+    "concat-map": {
+      "version": "0.0.1",
+      "resolved": "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz",
+      "from": "concat-map@0.0.1"
+    },
+    "core-js": {
+      "version": "2.5.1",
+      "resolved": "https://registry.npmjs.org/core-js/-/core-js-2.5.1.tgz",
+      "from": "core-js@>=2.4.0 <3.0.0"
+    },
+    "minimatch": {
+      "version": "2.0.10",
+      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-2.0.10.tgz",
+      "from": "minimatch@>=2.0.10 <2.1.0"
+    },
     "node-dir": {
       "version": "0.1.9",
       "resolved": "https://registry.npmjs.org/node-dir/-/node-dir-0.1.9.tgz",
-      "from": "https://registry.npmjs.org/node-dir/-/node-dir-0.1.9.tgz",
-      "dependencies": {
-        "minimatch": {
-          "version": "2.0.10",
-          "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-2.0.10.tgz",
-          "from": "https://registry.npmjs.org/minimatch/-/minimatch-2.0.10.tgz",
-          "dependencies": {
-            "brace-expansion": {
-              "version": "1.1.0",
-              "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.0.tgz",
-              "from": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.0.tgz",
-              "dependencies": {
-                "balanced-match": {
-                  "version": "0.2.0",
-                  "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-0.2.0.tgz",
-                  "from": "https://registry.npmjs.org/balanced-match/-/balanced-match-0.2.0.tgz"
-                },
-                "concat-map": {
-                  "version": "0.0.1",
-                  "resolved": "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz",
-                  "from": "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"
-                }
-              }
-            }
-          }
-        }
-      }
+      "from": "node-dir@0.1.9"
+    },
+    "regenerator-runtime": {
+      "version": "0.11.0",
+      "resolved": "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.11.0.tgz",
+      "from": "regenerator-runtime@>=0.11.0 <0.12.0"
     }
   }
 }

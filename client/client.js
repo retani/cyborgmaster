@@ -131,6 +131,14 @@ Template.master.events({
     console.log("stop stream", this);
     Players.update({'_id':this._id}, {$set : {"streaming":false}});
   },  
+  'click .stream_player_controls .record':function(event){
+    console.log("start recording stream", this);
+    Players.update({'_id':this._id}, {$set : {"isRecording":true}});
+  },  
+  'click .stream_player_controls .stop_recording':function(event){
+    console.log("stop recording stream", this);
+    Players.update({'_id':this._id}, {$set : {"isRecording":false}});
+  },      
   'click .prepare_select':function(event){
     Players.find({ 'preselect': { $type: 2 }}).forEach(function (doc) {
       Players.update({'_id':doc._id}, { $set : { 'filename':doc.preselect , 'state':'stop'  } })
@@ -246,6 +254,10 @@ Template.tableCell.helpers({
   },    
   'isMediaState':function(state) {   
     return this.state == state
+  },
+  'isMediaStream':function(){
+    var mediaElem = Template.parentData()
+    return mediaElem.stream
   },
   'checked':function(){
     var mediaElem = Template.parentData()
@@ -386,6 +398,9 @@ Template.player.helpers({
     var media = Media.findOne({"name":player.filename})
     return typeof(media) != "undefined" && Array.isArray(player.loop) && player.loop.indexOf(media._id) >= 0
   },
+  'isRecordingClass': function(){
+    return this.isRecording ? 'recording' : null
+  },
   'iframe' : function() {
     var player = Players.findOne({"_id":playerId})
     var media = Media.findOne({"name":player.filename})
@@ -502,6 +517,22 @@ Template.player.onRendered( function() {
         }
         if (FlowRouter.getRouteName() == "player")
         //console.log(doc);
+        // handle video recording
+        if (typeof doc.isRecording !== "undefined") {
+          if (doc.isRecording) {
+            startRecording()
+          } else {
+            stopRecording()
+            Players.update(playerId, {$set:{isUploading: true}})
+            setTimeout(function(){
+              uploadRecordedVideo(function(){
+                Players.update(playerId, {$set:{isUploading: false}})
+              })
+            }, 1000)
+            //uploadRecordedVideo()
+          }
+        }
+
         if (doc.filename) {
           TimeSync.resync();
           if (doc.filename.indexOf('stream:')===0) {

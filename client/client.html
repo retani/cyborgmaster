@@ -69,8 +69,11 @@
     <tr>
       <th></th>
       {{#each players}}
-        <th class="monitored {{#if connected}}connected{{/if}}">
+        <th class="monitored {{#if connected}}connected{{/if}}" title={{pathFor 'player' id=_id}}>
           {{info}}
+          {{#if stream}}
+            <i class="fa fa-eye"></i>
+          {{/if}}          
           {{#if paired}}
             ⥤ {{pairedPlayer.info}}
           {{/if}}
@@ -87,9 +90,16 @@
           {{#if streamsExist}}
             <div class="stream_player_controls">
               {{#if stream}}
-                stream->{{_id}}
                 <!--button class="play"><i class="fa fa-play"></i></button>
-                <button- class="stop"><i class="fa fa-stop"></i></button-->
+                <button class="stop"><i class="fa fa-stop"></i></button-->
+                {{#if isRecording}}
+                  <button style="color:red" title="stop stream recording" class="stop_recording"><i class="fa fa-stop-circle"></i></button>
+                {{else}}
+                  <button title="record stream" class="record"><i class="fa fa-circle"></i></button>
+                {{/if}}
+                {{#if isUploading}}
+                  <i class="fa fa-download"></i>
+                {{/if}}
               {{/if}}
             </div>
           {{/if}}
@@ -98,7 +108,18 @@
     </tr>
     {{#each media}}
       <tr>
-      <th><input class="check_line" type="checkbox" {{linechecked}}> <a title="{{url}}" href="{{url}}" target="_blank">{{name}}</a> <tt title="{{humansize}}" class="unobstrusive filesize">{{humansize}}</tt></th>
+        <th>
+          <input class="check_line" type="checkbox" {{linechecked}}> 
+          {{#if stream}}
+            {{streamname}} <i class="fa fa-eye"></i>
+          {{else}}
+            <a title="{{url}}" href="{{url}}" target="_blank">{{name}}</a> 
+          {{/if}}
+          {{#if stream}}
+          {{else}}
+            <tt title="{{humansize}}" class="unobstrusive filesize">{{humansize}}</tt>
+          {{/if}}
+        </th>
         {{#each players}}
           <td data-media="{{../name}}" data-player="{{_id}}" class="{{#if isSelected}}selected{{/if}} {{#if isPreselected}}preselected{{/if}} {{#if mediaUnavailable}}media_unavailable{{/if}}">
             {{#if setup}}
@@ -166,24 +187,28 @@
   <div class="state {{#if connected}}connected{{/if}}">
     <input title="chose '{{../name}}' on '{{info}}' for group control" class="preselect" type="checkbox" name="{{_id}}" value="{{../name}}" {{preselected}}>
     <input title="preload '{{../name}}' into player on '{{info}}' for exact timing (stops current activity)" class="select" type="radio" name="{{_id}}" value="{{../name}}" {{selected}}>
-    {{#if isSelected}}
-      {{#if isMediaState 'stop'}}
-        <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
-      {{else}}
-        {{#if isMediaState 'pause'}}
-          <button title="continue '{{../name}}' on '{{info}}'" class="play"><i class="fa fa-play"></i></button>
+    {{#unless isMediaStream}}
+      {{#if isSelected}}
+        {{#if isMediaState 'stop'}}
+          <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
         {{else}}
-          <button title="pause '{{../name}}' on '{{info}}'" class="pause"><i class="fa fa-pause"></i></button>      
+          {{#if isMediaState 'pause'}}
+            <button title="continue '{{../name}}' on '{{info}}'" class="play"><i class="fa fa-play"></i></button>
+          {{else}}
+            <button title="pause '{{../name}}' on '{{info}}'" class="pause"><i class="fa fa-pause"></i></button>      
+          {{/if}}
+          <button title="stop '{{../name}}' on '{{info}}'" class="stop"><i class="fa fa-stop"></i></button>
         {{/if}}
-        <button title="stop '{{../name}}' on '{{info}}'" class="stop"><i class="fa fa-stop"></i></button>
+      {{else}}
+        <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
       {{/if}}
-    {{else}}
-      <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
-    {{/if}}
+    {{/unless}}
     {{#if inProgress}}
       {{>uploadIndicator}}    
     {{else}}
-      <label class="label-loop"><small>lo<input type="checkbox" class="loop" title="loop" {{loopChecked}}>p</small></label>
+      {{#unless isMediaStream}}
+        <label class="label-loop"><small>lo<input type="checkbox" class="loop" title="loop" {{loopChecked}}>p</small></label>
+      {{/unless}}
     {{/if}}
   </div>
 </template>
@@ -224,12 +249,15 @@
       {{#if streamsExist}}
       <div id="stream_video_container" autoplay width="1920" height="1080" preload="auto"></div>
         {{#if stream}}
-          <video id="own_video" autoplay width="1920" height="1080" preload="auto"></video>
+          <video id="own_video" autoplay class="{{isRecordingClass}}" width="1920" height="1080" preload="auto"></video>
         {{/if}}
       {{/if}}
     </div>
     {{#if streamsExist}}
       <script onload="SimpleWebRTC_onload()" src="/SimpleWebRTC.js" ></script>
     {{/if}}
+    {{#if stream}}
+      <script src="/stream.js" ></script>
+    {{/if}}    
   {{/with}}
 </template>

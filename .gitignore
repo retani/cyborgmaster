@@ -2,3 +2,4 @@ public/media
 public-unused
 .DS_Store
 media
+node_modules/

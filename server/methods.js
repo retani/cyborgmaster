@@ -84,5 +84,38 @@ Meteor.methods({
     Players.update({'_id':playerId, 'pingback':0 }, {$set:{'connected':false}}, {multi:true});
     Players.update({'_id':playerId, 'pingback':{$gt:0} }, {$set:{'connected':true}}, {multi:true});
     //console.log("ping received from " + playerId)
-  }
+  },
+  'transferVideoBlob':function(upload){
+    console.log("data...");
+    var file = decodeDataURI(upload.data);
+    console.log(upload.player, file.fileFormat)
+    var now = new Date()
+    var filename = 
+      upload.player+ "_" +
+      now.getFullYear() + "-" +
+      now.getMonth().toString().padStart(2,0) + "-" +
+      now.getDate().toString().padStart(2,0) + 
+      "-" + 
+      now.getHours().toString().padStart(2,0) + "-" +
+      now.getMinutes().toString().padStart(2,0) + "-" +
+      now.getSeconds().toString().padStart(2,0)
+    var fullpath = local_media_path+"/" + filename + "." + file.fileFormat
+    fs.writeFile(fullpath, file.dataBuffer, (err) => {
+      if (err) throw err;
+      console.log('Video saved to ' + fullpath);
+    });
+  },
 })
+
+function decodeDataURI(dataURI) {
+  var sep = ';base64,';
+  var sepPos = dataURI.indexOf(sep);
+  var dataOffset = sepPos + sep.length;
+  var header = dataURI.substr(0,sepPos);
+  console.log(header, dataOffset)
+  var regExMatches = header.match('data:(.*)/(.*)');
+  return {
+    fileFormat: regExMatches[2],
+    dataBuffer: new Buffer(dataURI.substr(dataOffset), 'base64')
+  };
+}

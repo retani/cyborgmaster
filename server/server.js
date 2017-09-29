@@ -68,7 +68,30 @@ Meteor.publish('globals', function(options){
 //var nodeDir = Meteor.npmRequire("node-dir")
 
 publishedMedia = Meteor.publish('media', function() {
-  var self = this;
+  var self = this;  
+  Meteor.setInterval(function(){
+    addFiles(self)
+  },5000)
+  addFiles(self)
+
+  // add streams
+  var streamPlayers = Players.find({stream: true}).fetch();
+  _.each(streamPlayers, function(player){
+    console.log("adding stream")
+    self.added('media', player._id, { 
+      'url': null,
+      'name': 'stream:'+player._id,
+      'filesize': 0,
+      'target' : "video",
+      'stream' : true,
+      'streamname' : player.info,
+      'player_id': player._id
+    });    
+  })
+  this.ready();
+});
+
+function addFiles(publication) { // TODO: do not add the same files all the time
   var path = local_media_path;
   var medias = fs.readdirSync(path);
   _.each(medias, function(media) {
@@ -82,7 +105,7 @@ publishedMedia = Meteor.publish('media', function() {
       else {
         var url = '/media/' + media
       }
-      self.added('media', media, { 
+      publication.added('media', media, { 
         'url': url,
         'name': media,
         'filesize': filesize,
@@ -90,22 +113,11 @@ publishedMedia = Meteor.publish('media', function() {
       });
     }
   });
-  // add streams
-  var streamPlayers = Players.find({stream: true}).fetch();
-  _.each(streamPlayers, function(player){
-    console.log("adding stream")
-    self.added('media', player._id, { 
-      'url': null,
-      'name': 'stream:'+player._id,
-      'filesize': 0,
-      'target' : "video",
-    });    
-  })
-  this.ready();
-});
+  publication.ready();
+}
 
 if (Players.find({stream:true}).count() > 0) {
-  console.log("requires SSL connections because of stream enabled players");
+  console.log("SSL connections required because of stream enabled players");
   SSL('/Users/holger/Documents/Projekte/staatenlos/cyborgmaster/private/hmbp.local-selfsigned.key','/Users/holger/Documents/Projekte/staatenlos/cyborgmaster/private/hmbp.local-selfsigned.cert', 443);
 }
 
