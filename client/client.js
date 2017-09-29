@@ -486,7 +486,7 @@ Template.player.onRendered( function() {
 
         // we have to wait until it's ready
         webrtc.on('readyToCall', function (streamId) {
-          initMediaRecorder(); // from stream.js
+          if (typeof initMediaRecorder !== "undefined") initMediaRecorder(); // from stream.js
           Meteor.call('setStreamId', { playerId: playerId, streamId: streamId })
           webrtc.joinRoom("playmaster", function(){
             console.log("joined")
