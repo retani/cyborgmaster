@@ -90,8 +90,11 @@
           {{#if streamsExist}}
             <div class="stream_player_controls">
               {{#if stream}}
-                <!--button class="play"><i class="fa fa-play"></i></button>
-                <button class="stop"><i class="fa fa-stop"></i></button-->
+                {{#if streaming}}
+                  <button class="stop"><i class="fa fa-stop"></i></button>
+                {{else}}
+                  <button class="play"><i class="fa fa-play"></i></button>
+                {{/if}}
                 {{#if isRecording}}
                   <button style="color:red" title="stop stream recording" class="stop_recording"><i class="fa fa-stop-circle"></i></button>
                 {{else}}

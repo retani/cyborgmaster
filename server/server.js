@@ -84,6 +84,7 @@ publishedMedia = Meteor.publish('media', function() {
       'filesize': 0,
       'target' : "video",
       'stream' : true,
+      'streaming': true,
       'streamname' : player.info,
       'player_id': player._id
     });    
@@ -187,4 +188,14 @@ Players.find({ "type" : "rpi" }).observe({
     }
   }
 });     
+*/
+
+
+/*
+var express = require('express')
+var sockets = require('signalmaster/sockets')
+
+var app = express()
+var server = app.listen(port)
+sockets(server, config) // config is the same that server.js uses
 */

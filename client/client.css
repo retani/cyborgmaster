@@ -153,9 +153,11 @@ a, a:visited {
 #player .info {
   position: absolute;
   top:50vh;
+  transform: translateY(-50%);
   display: block;
   width: 100%;
   text-align: center;
+  z-index: 10;
 }
 
 #player .info small {

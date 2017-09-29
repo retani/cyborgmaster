@@ -465,38 +465,47 @@ Template.player.onRendered( function() {
     var videoElem = $("#video").get(0)
 
     SimpleWebRTC_onload = function(){
-      webrtc = new SimpleWebRTC({
-          // the id/element dom element that will hold "our" video
-          localVideoEl: 'own_video',
-          // the id/element dom element that will hold remote videos
-          remoteVideosEl: 'stream_video_container',
-          // immediately ask for camera access
-          autoRequestMedia: true,
-          //url: 'https://hmbp:8443/'
-          media: { video: player.stream, audio: false}
-      });
-
-      webrtc.on('videoAdded', function (elem, peer) {
-        // hide all except desired
-        console.log("added video")
-        toggleStreamVideos()
-      })
-
-
-      // we have to wait until it's ready
-      webrtc.on('readyToCall', function (streamId) {
-        Meteor.call('setStreamId', { playerId: playerId, streamId: streamId })
-        webrtc.joinRoom("playmaster", function(){
-          console.log("joined")
+      setTimeout(function(){
+        webrtc = new SimpleWebRTC({
+            // the id/element dom element that will hold "our" video
+            localVideoEl: 'own_video',
+            // the id/element dom element that will hold remote videos
+            remoteVideosEl: 'stream_video_container',
+            // immediately ask for camera access
+            autoRequestMedia: true,
+            //url: 'https://192.168.0.66:8888/',
+            media: { video: player.stream, audio: false}
         });
-        webrtc.createRoom("playmaster", function(){
+
+        webrtc.on('videoAdded', function (elem, peer) {
+          // hide all except desired
+          console.log("added video")
+          toggleStreamVideos()
+        })
+
+
+        // we have to wait until it's ready
+        webrtc.on('readyToCall', function (streamId) {
+          initMediaRecorder(); // from stream.js
+          Meteor.call('setStreamId', { playerId: playerId, streamId: streamId })
           webrtc.joinRoom("playmaster", function(){
             console.log("joined")
           });
+          webrtc.createRoom("playmaster", function(){
+            webrtc.joinRoom("playmaster", function(){
+              console.log("joined")
+            });
+          });
+
+          if (player.streaming) {
+            webrtc.resume()
+          } else {
+            webrtc.pause()
+          }
+      
+          console.log("streaming to: playmaster")
         });
-        
-        console.log("streaming to: playmaster")
-      });
+      },2000)
     }
 
     streamObserver = Players.find().observeChanges({
@@ -533,6 +542,16 @@ Template.player.onRendered( function() {
           }
         }
 
+        //handle streaming on/off
+        if (typeof doc.streaming !== "undefined") {
+          if (doc.streaming) {
+            webrtc.resume()
+          } else {
+            webrtc.pause()
+          }
+        }
+
+        // handle filename
         if (doc.filename) {
           TimeSync.resync();
           if (doc.filename.indexOf('stream:')===0) {
