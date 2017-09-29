@@ -46,7 +46,10 @@ function openDataChannel (){
 
 /* globals MediaRecorder */
 
-initMediaRecorder();
+setTimeout(function(){
+  initMediaRecorder();
+},1000)
+
 
 var mediaRecorder;
 var recordedBlobs;
