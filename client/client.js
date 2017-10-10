@@ -464,6 +464,15 @@ Template.player.onRendered( function() {
     var player = Players.findOne({"_id":playerId})
     var videoElem = $("#video").get(0)
 
+    var video_constraints = {mandatory: {
+      maxWidth: 320,
+      maxHeight: 240,
+      maxAspectRatio:4/3,
+      maxFrameRate:10
+      },
+      optional: [ ]
+    };
+
     SimpleWebRTC_onload = function(){
       setTimeout(function(){
         webrtc = new SimpleWebRTC({
@@ -474,7 +483,7 @@ Template.player.onRendered( function() {
             // immediately ask for camera access
             autoRequestMedia: true,
             //url: 'https://192.168.0.66:8888/',
-            media: { video: player.stream, audio: false}
+            media: { video: player.stream ? video_constraints : false, audio: false}
         });
 
         webrtc.on('videoAdded', function (elem, peer) {
