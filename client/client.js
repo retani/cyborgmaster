@@ -479,6 +479,8 @@ Template.player.onRendered( function() {
 
     SimpleWebRTC_onload = function(){
       setTimeout(function(){
+          var signaling = 'https://'+mediaserver_address+':443/';
+          console.log("signal server: " + signaling);
         webrtc = new SimpleWebRTC({
             // the id/element dom element that will hold "our" video
             localVideoEl: 'own_video',
@@ -486,7 +488,7 @@ Template.player.onRendered( function() {
             remoteVideosEl: 'stream_video_container',
             // immediately ask for camera access
             autoRequestMedia: true,
-            url: 'https://'+mediaserver_address+':8888/',
+            url: signaling,
             media: { video: player.stream ? video_constraints : false, audio: false}
         });
 

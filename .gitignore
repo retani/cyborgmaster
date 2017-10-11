@@ -3,3 +3,4 @@ public-unused
 .DS_Store
 media
 node_modules/
+Thumbs.db

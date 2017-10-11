@@ -174,13 +174,13 @@ a, a:visited {
 }
 
 #player #own_video {
-  width: 12vw;
-  height: 12vh;
+  width: 320px;
+  height: 240px;
   position: fixed;
-  right: 2vw;
-  top: 2vh;
+  right: 0;
+  top: 0;
   visibility: visible;
-  display: none;  
+  //display: none;  /* SHOW OWN VIDEO */
 }
 
 #player #own_video.recording {
