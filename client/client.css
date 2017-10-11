@@ -180,6 +180,7 @@ a, a:visited {
   right: 2vw;
   top: 2vh;
   visibility: visible;
+  display: none;  
 }
 
 #player #own_video.recording {
