@@ -486,7 +486,7 @@ Template.player.onRendered( function() {
             remoteVideosEl: 'stream_video_container',
             // immediately ask for camera access
             autoRequestMedia: true,
-            //url: 'https://192.168.0.66:8888/',
+            url: 'https://'+mediaserver_address+':8888/',
             media: { video: player.stream ? video_constraints : false, audio: false}
         });
 

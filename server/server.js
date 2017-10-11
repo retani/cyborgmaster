@@ -119,7 +119,9 @@ function addFiles(publication) { // TODO: do not add the same files all the time
 
 if (Players.find({stream:true}).count() > 0) {
   console.log("SSL connections required because of stream enabled players");
-  SSL('/Users/holger/Documents/Projekte/staatenlos/cyborgmaster/private/hmbp.local-selfsigned.key','/Users/holger/Documents/Projekte/staatenlos/cyborgmaster/private/hmbp.local-selfsigned.cert', 443);
+  SSL(key_path, cert_path, 443);
+  console.log("starting signalmaster")
+  require("../imports/signalmaster/server.js");
 }
 
 Meteor.publish("connections", function() {
