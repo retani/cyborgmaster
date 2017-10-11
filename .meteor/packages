@@ -14,7 +14,6 @@ mizzao:user-status
 kadira:blaze-layout
 artwells:accounts-guest
 fortawesome:fontawesome
-meteorhacks:npm
 
 
 npm-container
@@ -37,3 +36,4 @@ mizzao:timesync
 nourharidy:ssl
 shell-server
 dynamic-import
+ecmascript

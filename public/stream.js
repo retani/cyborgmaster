@@ -55,7 +55,14 @@ function initMediaRecorder(){
 
   var constraints = {
     audio: true,
-    video: true
+    video:  {mandatory: {
+      maxWidth: 320,
+      maxHeight: 240,
+      maxAspectRatio:4/3,
+      maxFrameRate:10
+      },
+      optional: [ ]
+    },
   };
 
 	window.mediaSource = new MediaSource();

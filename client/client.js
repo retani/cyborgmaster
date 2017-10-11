@@ -259,6 +259,10 @@ Template.tableCell.helpers({
     var mediaElem = Template.parentData()
     return mediaElem.stream
   },
+  'videoLocallyAvailable':function(){
+    var mediaElem = Template.parentData()
+    return this.locallyAvailableVideos && this.locallyAvailableVideos.indexOf(mediaElem.url) >= 0
+  },  
   'checked':function(){
     var mediaElem = Template.parentData()
     return this.filename == mediaElem.name
@@ -464,6 +468,15 @@ Template.player.onRendered( function() {
     var player = Players.findOne({"_id":playerId})
     var videoElem = $("#video").get(0)
 
+    var video_constraints = {mandatory: {
+      maxWidth: 320,
+      maxHeight: 240,
+      maxAspectRatio:4/3,
+      maxFrameRate:10
+      },
+      optional: [ ]
+    };
+
     SimpleWebRTC_onload = function(){
       setTimeout(function(){
         webrtc = new SimpleWebRTC({
@@ -473,8 +486,8 @@ Template.player.onRendered( function() {
             remoteVideosEl: 'stream_video_container',
             // immediately ask for camera access
             autoRequestMedia: true,
-            //url: 'https://192.168.0.66:8888/',
-            media: { video: player.stream, audio: false}
+            url: 'https://'+mediaserver_address+':8888/',
+            media: { video: player.stream ? video_constraints : false, audio: false}
         });
 
         webrtc.on('videoAdded', function (elem, peer) {
@@ -561,9 +574,14 @@ Template.player.onRendered( function() {
           } else {
             currentStream = undefined;
             toggleStreamVideos()
-            if (player.type == "screen")
-              videoElem.src = "http://" + mediaserver_address + "/" + mediaserver_path + doc.filename
-            else {
+            if (player.type == "screen") {
+              if (player.locallyAvailableVideos && player.locallyAvailableVideos.indexOf(Media.findOne(doc.filename).url) >= 0) {
+                videoElem.src = "http://localhost/" + Media.findOne(doc.filename).url
+                console.log("playing video from localhost")
+              }
+              else
+                videoElem.src = "http://" + mediaserver_address + "/" + mediaserver_path + doc.filename
+            } else {
               videoElem.src = "http://localhost/" + doc.filename
             }
             if (player.specialPreload && !doc.state) {
@@ -605,7 +623,38 @@ Template.player.onRendered( function() {
       }
     });
     Players.update({"_id":playerId}, { $set : { "state":"stop", "filename":null } } ) // reset
+
+    
+    // serve locally if requested
+    var thisPlayer = Players.findOne({"_id":playerId});
+    var localServer = thisPlayer && thisPlayer.localServer;
+    if (localServer) {
+      console.log("This device has a local webserver");
+      //console.log(Media.find().fetch())
+      mediaObserver = Media.find().observeChanges({
+        added: function(id, doc) {
+          var test_url = 'http://localhost' + doc.url;
+          console.log("checking for: " + test_url);
+
+          $.ajax({
+              url: 'http://localhost' + doc.url,
+              success: function(){
+                 console.log(doc.url + " is locally available")
+                 Meteor.call('setLocallyAvailableVideo', { playerId: playerId, video: doc.url })
+              },
+              error: function(){
+                 console.log(doc.url + " is not locally available")
+              },              
+              timeout: 1000 
+          });
+
+        }
+      })      
+    }
+
+
   })
+
 });
 
 toggleStreamVideos = function() {

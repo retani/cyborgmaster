@@ -41,6 +41,13 @@ Meteor.methods({
     Players.update({_id:playerId}, { $set : {'streamId':streamId} })
     return streamId
   },
+  'setLocallyAvailableVideo': function (data) {
+    console.log("receiving local video availability " + data.video + " from " + data.playerId)
+    var playerId = data.playerId
+    var video = data.video
+    Players.update({_id:playerId}, { $addToSet : {'locallyAvailableVideos':video} })
+    return video
+  },
   'setGlobal': function(data) {
     console.log("set global "+data.name+" as "+data.value)
     Globals.upsert({'name':data.name},{ $set : {'value' : data.value}})

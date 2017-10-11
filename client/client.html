@@ -213,6 +213,9 @@
         <label class="label-loop"><small>lo<input type="checkbox" class="loop" title="loop" {{loopChecked}}>p</small></label>
       {{/unless}}
     {{/if}}
+    {{#if videoLocallyAvailable}}
+      <i class="fa fa-film"></i>
+    {{/if}}
   </div>
 </template>
 

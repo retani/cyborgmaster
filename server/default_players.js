@@ -27,6 +27,14 @@ default_players = [
     manual: "disallow",
     stream: false,
   },
+  {
+    _id: "serving",
+    type: "screen",
+    info: "Serving",
+    manual: "disallow",
+    stream: false,
+    localServer: true,
+  },
 
 
 
