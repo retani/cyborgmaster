@@ -230,6 +230,9 @@
     {{#if iframe}}
       <iframe class="overlay" src="{{iframeURL}}"></iframe>
     {{/if}}
+    {{#if img}}
+      <img class="overlay" src="{{imgURL}}">
+    {{/if}}    
     <div id="player" data-state="{{state}}" class="{{#if isLooping}}looping{{/if}}">
       {{#if isLooping}}
         <img class="loopimage" src="/loopimage.png">

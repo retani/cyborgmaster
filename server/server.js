@@ -103,6 +103,10 @@ function addFiles(publication) { // TODO: do not add the same files all the time
         var url = fs.readFileSync(path + '/' + media, 'utf8');
         target = "iframe"
       }
+      else if (media.split('.').pop() == "imgurl") {
+        var url = fs.readFileSync(path + '/' + media, 'utf8');
+        target = "img"
+      }      
       else {
         var url = '/media/' + media
       }

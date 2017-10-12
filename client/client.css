@@ -180,7 +180,7 @@ a, a:visited {
   right: 0;
   top: 0;
   visibility: visible;
-  //display: none;  /* SHOW OWN VIDEO */
+  display: none;  /* SHOW OWN VIDEO ? */
 }
 
 #player #own_video.recording {
@@ -245,7 +245,7 @@ visibility: visible !important;
   color:green;
 }
 
-iframe.overlay {
+iframe.overlay, img.overlay {
   height: 100vh;
   width: 100vw;
   margin:0;
@@ -254,4 +254,8 @@ iframe.overlay {
   position:fixed;
   top:0;
   left:0;
+}
+
+img.overlay {
+  object-fit: contain;
 }

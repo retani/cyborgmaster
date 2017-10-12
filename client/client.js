@@ -415,6 +415,16 @@ Template.player.helpers({
     var media = Media.findOne({"name":player.filename})
     return typeof(media)!="undefined" && media.url
   },
+  'img' : function() {
+    var player = Players.findOne({"_id":playerId})
+    var media = Media.findOne({"name":player.filename})
+    return typeof(media)!="undefined" && media.target == "img"
+  },  
+  'imgURL' : function() {
+    var player = Players.findOne({"_id":playerId})
+    var media = Media.findOne({"name":player.filename})
+    return typeof(media)!="undefined" && media.url
+  },  
   'streamsExist':function(){
     return Players.find({stream:true}).count() > 0
   },  
