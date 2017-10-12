@@ -1,7 +1,8 @@
 Meteor.methods({
   'reloadVideos': function () {
-    console.log(publishedMedia, "saving in " + process.env.PWD)
-    fs.writeFile(process.env.PWD + '/reload.js', 'var last_reload_timestamp = "'+Date.now()+'"', function(err){
+      var reloadpath = process.env.PWD || process.cwd();
+    console.log(publishedMedia, "saving in " + reloadpath)
+    fs.writeFile(reloadpath + '/reload.js', 'var last_reload_timestamp = "'+Date.now()+'"', function(err){
       if (err) throw err;
       console.log('It\'s saved!');
     });

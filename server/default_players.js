@@ -1,10 +1,10 @@
 default_players = [
   {
-    _id: "streamer1",
+    _id: "xtra3",
     type: "screen",
-    info: "Streamer 1",
+    info: "xtra3",
     manual: "disallow",
-    stream: true,
+    stream: false,
   },
   {
     _id: "streamer2",
