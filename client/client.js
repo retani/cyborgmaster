@@ -255,6 +255,15 @@ Template.tableCell.helpers({
   'isMediaState':function(state) {   
     return this.state == state
   },
+  'playtimestring': function() {
+    //return this.playStart + " " + this.playOffset
+    if (this.playStart)
+      return Date.now() - this.playStart + this.playOffset
+    if (this.playOffset > 0)
+      return this.playOffset
+    else
+      return "-"
+  },
   'isMediaStream':function(){
     var mediaElem = Template.parentData()
     return mediaElem.stream
@@ -312,6 +321,9 @@ Template.tableCell.events({
     var mediaElem = Template.parentData()
     Players.update({'_id':this._id},{$set :{'filename':mediaElem.name,'state':'stop'}})
   },
+  'click .resync' : function(event){
+    Meteor.call('resync', { playerId: this._id })
+  },  
   'click .loop' : function(event) {
     var mediaElem = Template.parentData()
     player = this
@@ -576,6 +588,39 @@ Template.player.onRendered( function() {
           }
         }
 
+        // handle resync
+        if (typeof doc.resync !== "undefined") {
+          console.log("resync", doc.resync)
+          var time_s = doc.resync/1000;
+
+          if (time_s >= videoElem.duration){
+            Players.update({"_id":playerId}, { $set : { "state":"stop", "filename":null } } ) // reset
+            return
+          }
+
+          videoElem.currentTime = time_s
+          if (player.state == "play" && videoElem.paused) {
+            myVideo.play(); 
+          }
+
+          //doc.filename = player.filename
+          //doc.state = player.state
+
+          setTimeout(()=>{
+            //if (player.state == "pause")  videoElem.pause()
+            //if (player.state == "play")  videoElem.play()
+            ////videoElem.currentTime = doc.resync + 1100
+          },1100)
+
+
+          //videoElem.currentTime = doc.resync/1000
+          //if (player.state == "play")  videoElem.play()
+   
+          setTimeout(()=>{
+            //videoElem.currentTime = doc.resync + 2100
+          },2100)
+        }
+
         // handle filename
         if (doc.filename) {
           TimeSync.resync();
@@ -601,6 +646,8 @@ Template.player.onRendered( function() {
             }
           }
         }
+
+        // handle state
         if (doc.state) {
           if (mobileBrowserPreloadActive) {
             mobileBrowserPreload("abort", videoElem)
@@ -634,7 +681,23 @@ Template.player.onRendered( function() {
         }
       }
     });
-    Players.update({"_id":playerId}, { $set : { "state":"stop", "filename":null } } ) // reset
+    
+    //setTimeout(()=>{
+      
+      if (player.type == "screen" && (!player.target || player.target == "video") && player.state == "play") {
+        console.log("restoring player - " + player.state +" " +player.filename, videoElem)
+        if (typeof(videoElem) == "undefined") videoElem = $("#video").get(0)
+        videoElem.src = "http://" + mediaserver_address + "/" + mediaserver_path + player.filename
+        setTimeout(()=>{
+          //videoElem.currentTime = doc.resync + 2100
+          videoElem.play()
+          Meteor.call('resync', { playerId: playerId })
+        },1100)
+        
+        // Players.update({"_id":playerId}, { $set : { "filename":"play", "filename":player.filename } } )
+      }
+    //},2100)
+    else Players.update({"_id":playerId}, { $set : { "state":"stop", "filename":null } } ) // reset
 
     
     // serve locally if requested

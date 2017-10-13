@@ -94,6 +94,10 @@ td {
   padding:2px 3px 2px 2px;
 }
 
+td[data-player] {
+  min-width: 10rem;
+}
+
 td.preselected, .group_controls {
   padding:0px 0px 0px 1px;
   border: solid rgba(255,255,0,0.9) 3px;

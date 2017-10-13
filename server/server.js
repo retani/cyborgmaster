@@ -205,3 +205,31 @@ var app = express()
 var server = app.listen(port)
 sockets(server, config) // config is the same that server.js uses
 */
+
+Players.find().observe({ // check for paired players
+  added: function (fields) {
+    Players.update({ _id : fields._id }, { $set : { playStart: false, playOffset: 0 } }) // reset
+  },
+  changed: function (fields, oldFields) {
+    if (fields.filename != oldFields.filename) {
+      Players.update({ _id : fields._id }, { $set : { playStart: false, playOffset: 0 } }) // reset
+    }
+    if (fields.state == "stop") {
+      //console.log("stop", fields.filename)
+      Players.update({ _id : fields._id }, { $set : { playStart: false, playOffset: 0 } }) // reset
+    }    
+    if (fields.state ==  "play" && oldFields.state != "play") { 
+      //console.log("play", fields.filename)
+      Players.update({ _id : fields._id }, { $set : { playStart: Date.now() } }) // update playStart
+    }    /*
+    if (fields.state ==  "play" && oldFields.state != "play" && oldFields.state != "plause") { 
+      console.log("play - not from pause", fields.filename)
+      Players.update({ _id : fields._id }, { $set : { playStart: Date.now(), playOffset: 0 } }) // update playStart
+    }        */
+    if (fields.state ==  "pause" && oldFields.state != "pause") { 
+      //console.log("pause", fields.filename)
+      var dt = fields.playStart ? Date.now() - fields.playStart + oldFields.playOffset : oldField.playOffset
+      Players.update({ _id : fields._id }, { $set : { playStart: false, playOffset: dt } }) // update playStart
+    }    
+  },
+});

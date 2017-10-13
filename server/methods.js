@@ -42,6 +42,19 @@ Meteor.methods({
     Players.update({_id:playerId}, { $set : {'streamId':streamId} })
     return streamId
   },
+  'resync': function (data) {
+    var playerId = data.playerId
+    var player = Players.findOne({ _id:playerId})
+    if (player.playStart)
+      var d = Date.now() - player.playStart + player.playOffset
+    else if (player.playOffset > 0)
+      var d = player.playOffset
+    else
+      var d = 0
+    console.log("resync " + player._id + " to " + d)
+    Players.update({'_id':player._id},{$set :{'resync':d}})
+    return d
+  },
   'setLocallyAvailableVideo': function (data) {
     console.log("receiving local video availability " + data.video + " from " + data.playerId)
     var playerId = data.playerId

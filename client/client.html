@@ -198,9 +198,10 @@
           {{#if isMediaState 'pause'}}
             <button title="continue '{{../name}}' on '{{info}}'" class="play"><i class="fa fa-play"></i></button>
           {{else}}
-            <button title="pause '{{../name}}' on '{{info}}'" class="pause"><i class="fa fa-pause"></i></button>      
+            <button title="pause '{{../name}}' on '{{info}}'" class="pause"><i class="fa fa-pause"></i></button>
           {{/if}}
           <button title="stop '{{../name}}' on '{{info}}'" class="stop"><i class="fa fa-stop"></i></button>
+          <button title="resync '{{../name}}' on '{{info}}'" class="resync"><i class="fa fa-caret-right"></i></button>
         {{/if}}
       {{else}}
         <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
