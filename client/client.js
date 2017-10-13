@@ -599,7 +599,7 @@ Template.player.onRendered( function() {
           }
 
           videoElem.currentTime = time_s
-          if (player.state == "play" && videoElem.paused) {
+          if (player.state == "play") {
             myVideo.play(); 
           }
 
@@ -681,7 +681,8 @@ Template.player.onRendered( function() {
         }
       }
     });
-    
+ 
+/*    
     //setTimeout(()=>{
       
       if (player.type == "screen" && (!player.target || player.target == "video") && player.state == "play") {
@@ -698,7 +699,8 @@ Template.player.onRendered( function() {
       }
     //},2100)
     else Players.update({"_id":playerId}, { $set : { "state":"stop", "filename":null } } ) // reset
-
+*/
+    Players.update({"_id":playerId}, { $set : { "state":"stop", "filename":null } } ) // reset
     
     // serve locally if requested
     var thisPlayer = Players.findOne({"_id":playerId});
