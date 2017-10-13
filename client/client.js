@@ -594,13 +594,22 @@ Template.player.onRendered( function() {
           var time_s = doc.resync/1000;
 
           if (time_s >= videoElem.duration){
+            console.log("video ended before resync")
             Players.update({"_id":playerId}, { $set : { "state":"stop", "filename":null } } ) // reset
             return
           }
 
-          videoElem.currentTime = time_s
-          if (player.state == "play") {
-            myVideo.play(); 
+          var p = Players.findOne({"_id":playerId})
+          console.log("player state: " + p.state)
+          if (p && p.state == "play") {
+            //videoElem.pause(); 
+            videoElem.play(); 
+            setTimeout(()=>{
+              console.log("resync with delay")
+              videoElem.currentTime = time_s + 0.2
+            }, 200)
+          } else {
+            videoElem.currentTime = time_s
           }
 
           //doc.filename = player.filename
