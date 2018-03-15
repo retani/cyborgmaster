@@ -67,6 +67,21 @@ Meteor.publish('globals', function(options){
 
 //var nodeDir = Meteor.npmRequire("node-dir")
 
+var img_filetypes = [
+  'jpg',
+  'jpeg',
+  'webp',
+  'gif',
+  'png',
+  'apng',
+  'mng',
+  'tif',
+  'tiff',
+  'svg',
+  'bmp',
+  'ico'
+  ]
+
 publishedMedia = Meteor.publish('media', function() {
   var self = this;
   var path = local_media_path;
@@ -79,6 +94,10 @@ publishedMedia = Meteor.publish('media', function() {
         var url = fs.readFileSync(path + '/' + media, 'utf8');
         target = "iframe"
       }
+      else if (img_filetypes.indexOf(media.split('.').pop()) > -1) {
+        var url = media;
+        target = "img"
+      }         
       else {
         var url = '/media/' + media
       }

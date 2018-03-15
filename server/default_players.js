@@ -6,17 +6,11 @@ default_players = [
     manual: "allow",
   },
   {
-    _id: "berlin",
-    type: "screen",
-    info: "Session Berlin",
-    manual: "allow",
-  },
-  {
     _id: "fireside",
     type: "screen",
     info: "Session Fireside",
     manual: "allow",
-  },
+  },/*
   {
     _id: "rheinlobby",
     type: "screen",
@@ -57,7 +51,7 @@ default_players = [
     _id: "l-7",
     type: "screen",
     info: "Lobby 7 (Intel)"
-  },  
+  },  */
   /*  {
     _id: "r1",
     type: "rpi",

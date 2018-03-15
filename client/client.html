@@ -157,24 +157,28 @@
   <div class="state {{#if connected}}connected{{/if}}">
     <input title="chose '{{../name}}' on '{{info}}' for group control" class="preselect" type="checkbox" name="{{_id}}" value="{{../name}}" {{preselected}}>
     <input title="preload '{{../name}}' into player on '{{info}}' for exact timing (stops current activity)" class="select" type="radio" name="{{_id}}" value="{{../name}}" {{selected}}>
-    {{#if isSelected}}
-      {{#if isMediaState 'stop'}}
-        <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
-      {{else}}
-        {{#if isMediaState 'pause'}}
-          <button title="continue '{{../name}}' on '{{info}}'" class="play"><i class="fa fa-play"></i></button>
+    {{#if hasControls}}
+      {{#if isSelected}}
+        {{#if isMediaState 'stop'}}
+          <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
         {{else}}
-          <button title="pause '{{../name}}' on '{{info}}'" class="pause"><i class="fa fa-pause"></i></button>      
+          {{#if isMediaState 'pause'}}
+            <button title="continue '{{../name}}' on '{{info}}'" class="play"><i class="fa fa-play"></i></button>
+          {{else}}
+            <button title="pause '{{../name}}' on '{{info}}'" class="pause"><i class="fa fa-pause"></i></button>      
+          {{/if}}
+          <button title="stop '{{../name}}' on '{{info}}'" class="stop"><i class="fa fa-stop"></i></button>
         {{/if}}
-        <button title="stop '{{../name}}' on '{{info}}'" class="stop"><i class="fa fa-stop"></i></button>
+      {{else}}
+        <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
       {{/if}}
-    {{else}}
-      <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
     {{/if}}
     {{#if inProgress}}
       {{>uploadIndicator}}    
     {{else}}
-      <label class="label-loop"><small>lo<input type="checkbox" class="loop" title="loop" {{loopChecked}}>p</small></label>
+      {{#if hasControls}}
+        <label class="label-loop"><small>lo<input type="checkbox" class="loop" title="loop" {{loopChecked}}>p</small></label>
+      {{/if}}
     {{/if}}
   </div>
 </template>
@@ -190,6 +194,9 @@
     {{#if iframe}}
       <iframe class="overlay" src="{{iframeURL}}"></iframe>
     {{/if}}
+    {{#if img}}
+      <img class="overlay" src="{{imgURL}}">
+    {{/if}}    
     <div id="player" data-state="{{state}}" class="{{#if isLooping}}looping{{/if}}">
       {{#if isLooping}}
         <img class="loopimage" src="/loopimage.png">

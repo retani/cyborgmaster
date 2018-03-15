@@ -254,7 +254,11 @@ Template.tableCell.helpers({
     //var res = (this.mediaStatus[mediaKey].progress > 0 && this.mediaStatus[mediaKey].progress < 1 )
     var res = (this.mediaStatus[mediaKey].downloading )
     return res
-  },  
+  },
+  'hasControls' : function() {
+    var mediaElem = Template.parentData()
+    return mediaElem.target == "video"
+  }
 });
 
 Template.tableCell.events({
@@ -384,7 +388,18 @@ Template.player.helpers({
     var player = Players.findOne({"_id":playerId})
     var media = Media.findOne({"name":player.filename})
     return typeof(media)!="undefined" && media.url
-  }
+  },
+  'img' : function() {
+    var player = Players.findOne({"_id":playerId})
+    var media = Media.findOne({"name":player.filename})
+    return typeof(media)!="undefined" && media.target == "img"
+  },  
+  'imgURL' : function() {
+    var player = Players.findOne({"_id":playerId})
+    var media = Media.findOne({"name":player.filename})
+    var url = "http://" + mediaserver_address + "/" + mediaserver_path + encodeURIComponent(media.url)
+    return typeof(media)!="undefined" && url
+  },    
 });
 
 Template.player.events({
@@ -442,7 +457,6 @@ Template.player.onRendered( function() {
           Meteor.call('playerPingback', playerId, function (error, result) {});
         }
         if (FlowRouter.getRouteName() == "player")
-        //console.log(doc);
         if (doc.filename) {
           TimeSync.resync();
           if (player.type == "screen")
@@ -452,13 +466,13 @@ Template.player.onRendered( function() {
           }
           if (player.specialPreload && !doc.state) {
             mobileBrowserPreload("init", videoElem)
-          }
+          } 
         }
         if (doc.state) {
           if (mobileBrowserPreloadActive) {
             mobileBrowserPreload("abort", videoElem)
           }
-          if (doc.state == "play") {
+          if (doc.state == "play") {     
             var play_delay = Globals.findOne({name:"play_delay"})
             if (play_delay && play_delay.value == true) {
               TimeSync.resync();

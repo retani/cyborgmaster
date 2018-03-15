@@ -187,6 +187,8 @@ a, a:visited {
 
 #player .medialist {
   opacity: 0.1;
+  z-index: 1;
+  position: absolute;
 }
 
 #player .loopimage {
@@ -211,7 +213,7 @@ a, a:visited {
   color:green;
 }
 
-iframe.overlay {
+iframe.overlay, img.overlay {
   height: 100vh;
   width: 100vw;
   margin:0;
@@ -221,3 +223,7 @@ iframe.overlay {
   top:0;
   left:0;
 }
+
+img.overlay {
+  object-fit: contain;
+ } 
