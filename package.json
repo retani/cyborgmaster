@@ -2,7 +2,9 @@
   "name": "playmaster",
   "version": "0.0.9",
   "description": "",
-  "dependencies": {},
+  "dependencies": {
+    "@babel/runtime": "^7.0.0-beta.42"
+  },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,0 +1,3 @@
+[submodule "packages/meteor-accounts-guest"]
+	path = packages/meteor-accounts-guest
+	url = https://github.com/baursn/meteor-accounts-guest.git
