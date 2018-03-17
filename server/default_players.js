@@ -1,14 +1,14 @@
 default_players = [
   {
-    _id: "bonn",
+    _id: "screen1",
     type: "screen",
-    info: "Session Bonn",
+    info: "Screen 1",
     manual: "allow",
   },
   {
-    _id: "fireside",
+    _id: "screen2",
     type: "screen",
-    info: "Session Fireside",
+    info: "Screen 2",
     manual: "allow",
   },/*
   {
