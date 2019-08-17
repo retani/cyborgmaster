@@ -61,7 +61,7 @@ th .stream_player_controls {
 td .state {
   /*width:115px;*/
   opacity: 0.3;
-  transition: opacity 2s 0.3s;
+  transition: opacity 0.3s;
 }
 
 td .state.setup {
@@ -212,6 +212,9 @@ visibility: visible !important;
 }
 
 #player[data-state=stop] video {
+  visibility: hidden;
+}
+#player[data-state=stop] img {
   visibility: hidden;
 }
 

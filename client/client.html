@@ -70,7 +70,7 @@
       <th></th>
       {{#each players}}
         <th class="monitored {{#if connected}}connected{{/if}}" title={{pathFor 'player' id=_id}}>
-          {{info}}
+          <a target="{{_id}}" href="{{pathFor 'player' id=_id}}">{{info}}</a>
           {{#if stream}}
             <i class="fa fa-eye"></i>
           {{/if}}          
@@ -159,9 +159,6 @@
       <label><input id="show_setup" type="checkbox" value="yes" {{setupchecked}}> Raspberries media setup</label>
       <label id="play_delay_label"><input id="play_delay" type="checkbox" value="yes" {{playdelaychecked}}> Auto Safe Play Delay</label>
     </p>
-    <p>
-      <button class="reload_videos">Restart (Reload Videos)</button>
-    </p>
   </div>
 </template>
 
@@ -195,13 +192,18 @@
         {{#if isMediaState 'stop'}}
           <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
         {{else}}
-          {{#if isMediaState 'pause'}}
-            <button title="continue '{{../name}}' on '{{info}}'" class="play"><i class="fa fa-play"></i></button>
-          {{else}}
-            <button title="pause '{{../name}}' on '{{info}}'" class="pause"><i class="fa fa-pause"></i></button>
-          {{/if}}
-          <button title="stop '{{../name}}' on '{{info}}'" class="stop"><i class="fa fa-stop"></i></button>
-          <button title="resync '{{../name}}' on '{{info}}'" class="resync"><i class="fa fa-caret-right"></i></button>
+          
+            {{#if isMediaState 'pause'}}
+              <button title="continue '{{../name}}' on '{{info}}'" class="play"><i class="fa fa-play"></i></button>
+            {{else}}
+            {{#unless img}}
+              <button title="pause '{{../name}}' on '{{info}}'" class="pause"><i class="fa fa-pause"></i></button>
+              {{/unless}}    
+              {{/if}}
+            <button title="stop '{{../name}}' on '{{info}}'" class="stop"><i class="fa fa-stop"></i></button>
+            {{#unless img}}
+            <button title="resync '{{../name}}' on '{{info}}'" class="resync"><i class="fa fa-caret-right"></i></button>
+            {{/unless}}  
         {{/if}}
       {{else}}
         <button title="play '{{../name}}' on '{{info}}' now" class="play"><i class="fa fa-play"></i></button>
@@ -211,7 +213,9 @@
       {{>uploadIndicator}}    
     {{else}}
       {{#unless isMediaStream}}
-        <label class="label-loop"><small>lo<input type="checkbox" class="loop" title="loop" {{loopChecked}}>p</small></label>
+        {{#unless img}}
+          <label class="label-loop"><small>lo<input type="checkbox" class="loop" title="loop" {{loopChecked}}>p</small></label>
+        {{/unless}}    
       {{/unless}}
     {{/if}}
     {{#if videoLocallyAvailable}}
@@ -228,13 +232,13 @@
 
 <template name="player">
   {{#with player}}
-    {{#if iframe}}
-      <iframe class="overlay" src="{{iframeURL}}"></iframe>
-    {{/if}}
-    {{#if img}}
-      <img class="overlay" src="{{imgURL}}">
-    {{/if}}    
     <div id="player" data-state="{{state}}" class="{{#if isLooping}}looping{{/if}}">
+      {{#if iframe}}
+        <iframe class="overlay" src="{{iframeURL}}"></iframe>
+      {{/if}}
+      {{#if img}}
+        <img class="overlay" src="{{imgURL}}">
+      {{/if}}          
       {{#if isLooping}}
         <img class="loopimage" src="/loopimage.png">
       {{/if}}

@@ -255,6 +255,12 @@ Template.tableCell.helpers({
   'isMediaState':function(state) {   
     return this.state == state
   },
+  'img' : function() {
+    var mediaElem = Template.parentData()
+    var player = Players.findOne({"_id":this._id})
+    var media = Media.findOne({"name":mediaElem.name})
+    return typeof(media)!="undefined" && media.target == "img"
+  },    
   'playtimestring': function() {
     //return this.playStart + " " + this.playOffset
     if (this.playStart)

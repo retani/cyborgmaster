@@ -1,5 +1,9 @@
 Meteor.startup(function () {
 
+  if (enable_media_server) {
+    require('../imports/mediaserver.js')
+  }
+
   Connections.remove({})
 
 /*
@@ -33,7 +37,7 @@ Meteor.startup(function () {
   Globals.remove({})
   Globals.insert({"name":"show_labels", "value":true})
 
-  var play_delay_default = true;
+  var play_delay_default = false;
   if (Globals.find({'name':'play_delay'}).count() == 0) {
     //Globals.insert({"name":"play_delay", "value":play_delay_default})
     Meteor.call('playDelay', play_delay_default, function (error, result) {});
@@ -99,14 +103,19 @@ function addFiles(publication) { // TODO: do not add the same files all the time
     if(media.substr(0,1) != ".") {
       var filesize = fs.statSync(path + "/" + media)['size']
       var target = "video"
-      if (media.split('.').pop() == "url") {
+      var ext = media.split('.').pop().toLowerCase()
+      if (ext == "url") {
         var url = fs.readFileSync(path + '/' + media, 'utf8');
         target = "iframe"
       }
       else if (media.split('.').pop() == "imgurl") {
         var url = fs.readFileSync(path + '/' + media, 'utf8');
         target = "img"
-      }      
+      }
+      else if (['jpg','gif','png'].indexOf(ext) > -1) {
+        var url = "http://" + mediaserver_address + "/" + mediaserver_path + media
+        target = "img"
+      }
       else {
         var url = '/media/' + media
       }

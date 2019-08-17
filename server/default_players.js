@@ -1,4 +1,28 @@
 default_players = [
+
+  {
+    _id: "player1",
+    type: "screen",
+    info: "Player 1",
+    manual: "disallow",
+    stream: false,
+  },
+  {
+    _id: "player2",
+    type: "screen",
+    info: "Player 2",
+    manual: "disallow",
+    stream: false,
+  },
+  {
+    _id: "audience",
+    type: "screen",
+    info: "Audience",
+    manual: "disallow",
+    stream: false,
+  },    
+
+/*
   {
     _id: "xtra3",
     type: "screen",
@@ -69,7 +93,7 @@ default_players = [
     manual: "disallow",
     stream: false,
   },
-
+*/
 
 
 
