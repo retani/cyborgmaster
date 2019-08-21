@@ -1,13 +1,16 @@
+import { Meteor } from 'meteor/meteor';
+import { WebApp } from 'meteor/webapp';
+
 var express = require('express');
-var app = express();
+
+const app = express();
+
 var port = 8080
 
 // app.get('/', function (req, res) {
 //   res.send('Hello World!');
 // });
 
-app.use(express.static(local_media_path));
+app.use("/media", express.static(local_media_path));
 
-app.listen(port, function () {
-  console.log('Media server listening on port ' + port);
-});
+WebApp.connectHandlers.use(app);
