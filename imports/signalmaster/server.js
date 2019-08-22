@@ -1,4 +1,4 @@
-var cyborgconfig = require('../../lib/config.js');
+var cyborgconfig = require('../../server/config.js');
 
     var signalconfig = {
       "isDev": false,

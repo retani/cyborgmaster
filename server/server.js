@@ -35,7 +35,10 @@ Meteor.startup(function () {
 
 
   Globals.remove({})
-  Globals.insert({"name":"show_labels", "value":true})
+  Globals.insert({"name": "show_labels", "value" :true})
+  Globals.insert({"name": "mediaserver_address", "value": mediaserver_address})
+  Globals.insert({"name": "mediaserver_path", "value": mediaserver_path})
+  Globals.insert({"name": "local_media_path", "value": local_media_path})
 
   var play_delay_default = false;
   if (Globals.find({'name':'play_delay'}).count() == 0) {

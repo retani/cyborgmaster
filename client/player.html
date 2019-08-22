@@ -1,0 +1,48 @@
+
+<!--*********** player ************* -->
+
+<template name="player">
+  {{#with player}}
+    <div id="player" data-state="{{state}}" class="{{#if isLooping}}looping{{/if}}">
+      {{#if iframe}}
+        <iframe class="overlay" src="{{iframeURL}}"></iframe>
+      {{/if}}
+      {{#if img}}
+        <img class="overlay" src="{{imgURL}}">
+      {{/if}}          
+      {{#if isLooping}}
+        <img class="loopimage" src="/loopimage.png">
+      {{/if}}
+      {{#if show_info}}
+      <h1 class="info">{{info}}<br><small>{{additionalInfo}}</small></h1>
+      {{/if}}
+      {{#if show_list}}
+        <ul class="medialist">
+          {{#each list}}
+            <li>
+                <span class="indicator {{#if isCurrentMedia}}currentMedia{{/if}}">
+                  {{#if isCurrentMedia}}&#9654;{{else}}&#9655;{{/if}}
+                </span>
+              <a target="_playmaster_manual_play" href="{{mediaURL _id}}">{{name}}</a>
+            </li>
+          {{/each}}
+        </ul>
+      {{/if}}
+      <video id="video" width="1920" height="1080" preload="auto" {{loop}}>
+        video not supported
+      </video>
+      {{#if streamsExist}}
+      <div id="stream_video_container" autoplay width="1920" height="1080" preload="auto"></div>
+        {{#if stream}}
+          <video id="own_video" autoplay class="{{isRecordingClass}}" width="1920" height="1080" preload="auto"></video>
+        {{/if}}
+      {{/if}}
+    </div>
+    {{#if streamsExist}}
+      <script onload="SimpleWebRTC_onload()" src="/SimpleWebRTC.js" ></script>
+    {{/if}}
+    {{#if stream}}
+      <script src="/stream.js" ></script>
+    {{/if}}    
+  {{/with}}
+</template>
