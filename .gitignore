@@ -4,3 +4,7 @@ public-unused
 media
 node_modules/
 Thumbs.db
+
+version.desktop
+.desktop/
+.desktop-installer/

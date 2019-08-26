@@ -11,10 +11,15 @@
     "express": "^4.17.1",
     "signal-master": "^1.0.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "electron": "2.0.10",
+    "electron-builder": "20.28.4",
+    "meteor-desktop": "^2.0.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "meteor"
+    "start": "meteor",
+    "desktop": "meteor-desktop"
   },
   "repository": {
     "type": "git",
