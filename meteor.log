@@ -1,0 +1,257 @@
+Warning: The --production flag should only be used to simulate production
+bundling for testing purposes. Use meteor build to create a bundle for
+production deployment. See: https://guide.meteor.com/deployment.html
+
+[[[[[ ~/Documents/Projekte/playmaster/cyborgmaster ]]]]]
+
+
+=> Started proxy.
+
+Local package version is up-to-date: accounts-base@1.4.4
+
+Local package version is up-to-date: accounts-ui@1.3.1
+
+Local package version is up-to-date: accounts-ui-unstyled@1.4.2
+
+Local package version is up-to-date: allow-deny@1.1.0
+
+Local package version is up-to-date: arillo:flow-router-helpers@0.5.2
+
+Local package version is up-to-date: autoupdate@1.6.0
+
+Local package version is up-to-date: babel-compiler@7.3.4
+
+Local package version is up-to-date: babel-runtime@1.3.0
+
+Local package version is up-to-date: base64@1.0.12
+
+Local package version is up-to-date: binary-heap@1.0.11
+
+Local package version is up-to-date: blaze@2.3.3
+
+Local package version is up-to-date: blaze-html-templates@1.1.2
+
+Local package version is up-to-date: blaze-tools@1.0.10
+
+Local package version is up-to-date: boilerplate-generator@1.6.0
+
+Local package version is up-to-date: caching-compiler@1.2.1
+
+Local package version is up-to-date: caching-html-compiler@1.1.3
+
+Local package version is up-to-date: callback-hook@1.1.0
+
+Local package version is up-to-date: cfs:access-point@0.1.49
+
+Local package version is up-to-date: cfs:base-package@0.0.30
+
+Local package version is up-to-date: cfs:collection@0.5.5
+
+Local package version is up-to-date: cfs:collection-filters@0.2.4
+
+Local package version is up-to-date: cfs:data-man@0.0.6
+
+Local package version is up-to-date: cfs:file@0.1.17
+
+Local package version is up-to-date: cfs:filesystem@0.1.2
+
+Local package version is up-to-date: cfs:http-methods@0.0.32
+
+Local package version is up-to-date: cfs:http-publish@0.0.13
+
+Local package version is up-to-date: cfs:power-queue@0.9.11
+
+Local package version is up-to-date: cfs:reactive-list@0.0.9
+
+Local package version is up-to-date: cfs:reactive-property@0.0.4
+
+Local package version is up-to-date: cfs:standard-packages@0.5.10
+
+Local package version is up-to-date: cfs:storage-adapter@0.2.4
+
+Local package version is up-to-date: cfs:tempstore@0.1.6
+
+Local package version is up-to-date: cfs:upload-http@0.0.20
+
+Local package version is up-to-date: cfs:worker@0.1.5
+
+Local package version is up-to-date: check@1.3.1
+
+Local package version is up-to-date: coffeescript@1.0.17
+
+Local package version is up-to-date: ddp@1.4.0
+
+Local package version is up-to-date: ddp-client@2.3.3
+
+Local package version is up-to-date: ddp-common@1.4.0
+
+Local package version is up-to-date: ddp-rate-limiter@1.0.7
+
+Local package version is up-to-date: ddp-server@2.3.0
+
+Local package version is up-to-date: deps@1.0.12
+
+Local package version is up-to-date: diff-sequence@1.1.1
+
+Local package version is up-to-date: dynamic-import@0.5.1
+
+Local package version is up-to-date: ecmascript@0.12.7
+
+Local package version is up-to-date: ecmascript-runtime@0.7.0
+
+Local package version is up-to-date: ecmascript-runtime-client@0.8.0
+
+Local package version is up-to-date: ecmascript-runtime-server@0.7.1
+
+Local package version is up-to-date: ejson@1.1.0
+
+Local package version is up-to-date: es5-shim@4.8.0
+
+Local package version is up-to-date: fetch@0.1.1
+
+Local package version is up-to-date: fortawesome:fontawesome@4.7.0
+
+Local package version is up-to-date: geojson-utils@1.0.10
+
+Local package version is up-to-date: hot-code-push@1.0.4
+
+Local package version is up-to-date: html-tools@1.0.11
+
+Local package version is up-to-date: htmljs@1.0.11
+
+Local package version is up-to-date: http@1.4.2
+
+Local package version is up-to-date: id-map@1.1.0
+
+Local package version is up-to-date: insecure@1.0.7
+
+Local package version is up-to-date: inter-process-messaging@0.1.0
+
+Local package version is up-to-date: jquery@1.11.11
+
+Local package version is up-to-date: kadira:blaze-layout@2.3.0
+
+Local package version is up-to-date: kadira:flow-router@2.12.1
+
+Local package version is up-to-date: launch-screen@1.1.1
+
+Local package version is up-to-date: less@2.8.0
+
+Local package version is up-to-date: livedata@1.0.18
+
+Local package version is up-to-date: localstorage@1.2.0
+
+Local package version is up-to-date: logging@1.1.20
+
+Local package version is up-to-date: meteor@1.9.3
+
+Local package version is up-to-date: meteor-base@1.4.0
+
+Local package version is up-to-date: minifier-css@1.4.2
+
+Local package version is up-to-date: minifier-js@2.4.1
+
+Local package version is up-to-date: minimongo@1.4.5
+
+Local package version is up-to-date: mizzao:timesync@0.5.1
+
+Local package version is up-to-date: mizzao:user-status@0.6.8
+
+Local package version is up-to-date: mobile-experience@1.0.5
+
+Local package version is up-to-date: mobile-status-bar@1.0.14
+
+Local package version is up-to-date: modern-browsers@0.1.4
+
+Local package version is up-to-date: modules@0.13.0
+
+Local package version is up-to-date: modules-runtime@0.10.3
+
+Local package version is up-to-date: mongo@1.6.3
+
+Local package version is up-to-date: mongo-decimal@0.1.1
+
+Local package version is up-to-date: mongo-dev-server@1.1.0
+
+Local package version is up-to-date: mongo-id@1.0.7
+
+Local package version is up-to-date: mongo-livedata@1.0.12
+
+Local package version is up-to-date: nourharidy:ssl@0.2.2
+
+Local package version is up-to-date: npm-mongo@3.1.2
+
+Local package version is up-to-date: observe-sequence@1.0.16
+
+Local package version is up-to-date: omega:meteor-desktop-bundler@2.0.0
+
+Local package version is up-to-date: omega:meteor-desktop-watcher@2.0.0
+
+Local package version is up-to-date: ordered-dict@1.1.0
+
+Local package version is up-to-date: peerlibrary:assert@0.2.5
+
+Local package version is up-to-date: peerlibrary:blocking@0.5.2
+
+Local package version is up-to-date: peerlibrary:fs@0.1.7
+
+Local package version is up-to-date: promise@0.11.2
+
+Local package version is up-to-date: raix:eventemitter@0.1.3
+
+Local package version is up-to-date: random@1.1.0
+
+Local package version is up-to-date: rate-limit@1.0.9
+
+Local package version is up-to-date: reactive-dict@1.3.0
+
+Local package version is up-to-date: reactive-var@1.0.11
+
+Local package version is up-to-date: reload@1.3.0
+
+Local package version is up-to-date: retry@1.1.0
+
+Local package version is up-to-date: routepolicy@1.1.0
+
+Local package version is up-to-date: service-configuration@1.0.11
+
+Local package version is up-to-date: session@1.2.0
+
+Local package version is up-to-date: shell-server@0.4.0
+
+Local package version is up-to-date: socket-stream-client@0.2.2
+
+Local package version is up-to-date: spacebars@1.0.15
+
+Local package version is up-to-date: spacebars-compiler@1.1.3
+
+Local package version is up-to-date: standard-minifier-css@1.5.3
+
+Local package version is up-to-date: standard-minifier-js@2.4.1
+
+Local package version is up-to-date: templating@1.3.2
+
+Local package version is up-to-date: templating-compiler@1.3.3
+
+Local package version is up-to-date: templating-runtime@1.3.2
+
+Local package version is up-to-date: templating-tools@1.1.2
+
+Local package version is up-to-date: tracker@1.2.0
+
+Local package version is up-to-date: ui@1.0.13
+
+Local package version is up-to-date: underscore@1.0.10
+
+Local package version is up-to-date: url@1.2.0
+
+Local package version is up-to-date: webapp@1.7.4
+
+Local package version is up-to-date: webapp-hashing@1.0.9
+
+Local package version is up-to-date: zimme:active-route@2.3.2
+
+=> Started MongoDB.
+
+Browserslist: caniuse-lite is outdated. Please run next command `npm update caniuse-lite browserslist`
+
