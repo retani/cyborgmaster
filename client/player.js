@@ -1,3 +1,4 @@
+var isIOSDevice = require('ios-detector');
 
 Template.player.helpers({
   'playerId': function () {
@@ -71,10 +72,13 @@ Template.player.helpers({
     var player = Players.findOne({"_id":playerId})
     var media = Media.findOne({"name":player.filename})
     return typeof(media)!="undefined" && media.url
-  },  
+  },
   'streamsExist':function(){
     return Players.find({stream:true}).count() > 0
-  },  
+  },
+  'mute':function(){
+    return null // isIOSDevice() ? {mute:"mute"}: null
+  }  
 });
 
 Template.player.events({

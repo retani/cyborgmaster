@@ -28,7 +28,7 @@
           {{/each}}
         </ul>
       {{/if}}
-      <video id="video" width="1920" height="1080" preload="auto" {{loop}}>
+      <video id="video" width="1920" height="1080" preload="auto" {{loop}} {{mute}} playsinline webkit-playsinline>
         video not supported
       </video>
       {{#if streamsExist}}

@@ -10,6 +10,7 @@
     "bcrypt": "^1.0.3",
     "electron": "2.0.10",
     "express": "^4.17.1",
+    "ios-detector": "^1.0.0",
     "signal-master": "^1.0.1"
   },
   "devDependencies": {

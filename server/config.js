@@ -1,4 +1,4 @@
-mediaserver_address = process.env.CYBORGMASTER_MEDIASERVER_HOST || "192.168.5.100:3000"
+mediaserver_address = process.env.CYBORGMASTER_MEDIASERVER_HOST || "192.168.0.137:3000"
 mediaserver_path = process.env.CYBORGMASTER_MEDIASERVER_PATH || "media/"
 local_media_path = process.env.CYBORGMASTER_LOCAL_MEDIA_PATH || "/Users/holger/Documents/Projekte/playmaster/media/"
 key_path = '/Users/internil/server.key'
