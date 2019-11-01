@@ -1,26 +1,39 @@
 default_players = [
-
   {
     _id: "player1",
-    type: "screen",
+    type: "mobileapp",
     info: "Player 1",
     manual: "disallow",
     stream: false,
   },
   {
     _id: "player2",
-    type: "screen",
+    type: "mobileapp",
     info: "Player 2",
     manual: "disallow",
     stream: false,
   },
+  {
+    _id: "player3",
+    type: "mobileapp",
+    info: "Player 3",
+    manual: "disallow",
+    stream: false,
+  }, 
+  {
+    _id: "player4",
+    type: "mobileapp",
+    info: "Player 4",
+    manual: "disallow",
+    stream: false,
+  },  
   {
     _id: "audience",
     type: "screen",
     info: "Audience",
     manual: "disallow",
     stream: false,
-  },    
+  },
 
 /*
   {
