@@ -14,8 +14,7 @@
     "signal-master": "^1.0.1"
   },
   "devDependencies": {
-    "electron-builder": "20.28.4",
-    "meteor-desktop": "^2.0.0"
+    "electron-builder": "20.28.4"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
