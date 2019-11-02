@@ -1,4 +1,7 @@
-var isIOSDevice = require('ios-detector');
+import {isIOSDevice} from 'ios-detector';
+forceMute = isIOSDevice()
+playsInline = isIOSDevice()
+triggerPlay = isIOSDevice()
 
 Template.player.helpers({
   'playerId': function () {
@@ -77,8 +80,11 @@ Template.player.helpers({
     return Players.find({stream:true}).count() > 0
   },
   'mute':function(){
-    return null // isIOSDevice() ? {mute:"mute"}: null
-  }  
+    return forceMute ? {mute:"mute"}: null
+  },
+  'playsinline':function(){
+    return playsInline ? {'playsinline':'playsinline', 'webkit-playsinline':'webkit-playsinline'} : null
+  }
 });
 
 Template.player.events({
