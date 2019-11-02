@@ -70,6 +70,13 @@ Meteor.startup(function () {
     }
     return Players.find(query, { fields: fields } )
   })
+
+  Meteor.publish('playersMeta', function(){
+    var query = {}
+    var fields = { _id: 1, info: 1, type: 1 }
+    return Players.find(query, { fields } )
+  })
+  
 });
 
 Meteor.publish('globals', function(options){
