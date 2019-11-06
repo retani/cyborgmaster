@@ -4,9 +4,6 @@ Meteor.startup(function () {
     require('../imports/mediaserver.js')
   }
 
-  
-
-
 
   Connections.remove({})
 
@@ -74,75 +71,113 @@ Meteor.startup(function () {
   Meteor.publish('playersMeta', function(){
     var query = {}
     var fields = { _id: 1, info: 1, type: 1 }
-    return Players.find(query, { fields } )
+    var sort = { info: 1 }
+    return Players.find(query, { fields, sort } )
   })
   
-});
-
-Meteor.publish('globals', function(options){
-  return Globals.find()
-})
-
-//var nodeDir = Meteor.npmRequire("node-dir")
-
-publishedMedia = Meteor.publish('media', function() {
-  var self = this;  
-  Meteor.setInterval(function(){
-    addFiles(self)
-  },5000)
-  addFiles(self)
-
-  // add streams
-  var streamPlayers = Players.find({stream: true}).fetch();
-  _.each(streamPlayers, function(player){
-    console.log("adding stream")
-    self.added('media', player._id, { 
-      'url': null,
-      'name': 'stream:'+player._id,
-      'filesize': 0,
-      'target' : "video",
-      'stream' : true,
-      'streaming': true,
-      'streamname' : player.info,
-      'player_id': player._id
-    });    
+  Meteor.publish('globals', function(options){
+    return Globals.find()
   })
-  this.ready();
+
+  //var nodeDir = Meteor.npmRequire("node-dir")
+
+  var publishedMedia = Meteor.publish('media', function() {
+    var self = this;  
+    Meteor.setInterval(function(){
+      addFiles(self)
+    },5000)
+    addFiles(self)
+
+    // add streams
+    var streamPlayers = Players.find({stream: true}).fetch();
+    _.each(streamPlayers, function(player){
+      console.log("adding stream")
+      self.added('media', player._id, { 
+        'url': null,
+        'name': 'stream:'+player._id,
+        'filesize': 0,
+        'target' : "video",
+        'stream' : true,
+        'streaming': true,
+        'streamname' : player.info,
+        'player_id': player._id
+      });    
+    })
+    this.ready();
+  });
 });
+
+let mediaPublicationFiles = {}
 
 function addFiles(publication) { // TODO: do not add the same files all the time
+
   var path = local_media_path;
-  var medias = fs.readdirSync(path);
-  _.each(medias, function(media) {
-    if(media.substr(0,1) != ".") {
-      var filesize = fs.statSync(path + "/" + media)['size']
-      var target = "video"
-      var ext = media.split('.').pop().toLowerCase()
-      if (ext == "url") {
-        var url = fs.readFileSync(path + '/' + media, 'utf8');
-        target = "iframe"
-      }
-      else if (media.split('.').pop() == "imgurl") {
-        var url = fs.readFileSync(path + '/' + media, 'utf8');
-        target = "img"
-      }
-      else if (['jpg','gif','png'].indexOf(ext) > -1) {
-        var url = "http://" + mediaserver_address + "/" + mediaserver_path + media
-        target = "img"
-      }
-      else {
-        var url = '/media/' + media
-      }
-      publication.added('media', media, { 
-        'url': url,
-        'name': media,
-        'filesize': filesize,
-        'target' : target
-      });
+  var medias = fs.readdirSync(path)
+    .filter(media => media.substr(0,1) != ".")
+    .map(media => ({ 
+      name: media,
+      filesize: fs.statSync(path + "/" + media)['size']
+    }))
+  // add files
+  _.each(medias, function(mediaObj) {
+    var media = mediaObj.name
+    var filesize = mediaObj.filesize
+
+    if (mediaPublicationFiles[media] && mediaPublicationFiles[media].filesize === filesize) {
+      return
     }
+
+    var target = "video"
+    var ext = media.split('.').pop().toLowerCase()
+    if (ext == "url") {
+      var url = fs.readFileSync(path + '/' + media, 'utf8');
+      target = "iframe"
+    }
+    else if (media.split('.').pop() == "imgurl") {
+      var url = fs.readFileSync(path + '/' + media, 'utf8');
+      target = "img"
+    }
+    else if (['jpg','gif','png'].indexOf(ext) > -1) {
+      var url = "http://" + mediaserver_address + "/" + mediaserver_path + media
+      target = "img"
+    }
+    else {
+      var url = '/media/' + media
+    }
+
+    var doc = { 
+      'url': url,
+      'name': media,
+      'filesize': filesize,
+      'target' : target
+    }
+
+    console.log("adding", media, doc)
+
+    publication.added('media', media, doc);
+    mediaPublicationFiles[media] = doc // keep track of published files
   });
+
+  // remove files
+  let keysToRemove = []
+
+  Object.keys(mediaPublicationFiles).forEach( name => { // media = key = filename
+    let existingMedia = medias.find( mediaObj => mediaObj.name === name )
+    if (!existingMedia) {
+      keysToRemove.push(name)
+    }
+  })
+
+  keysToRemove.forEach( key => {
+    console.log("removing", key)
+
+    publication.removed('media', key);
+    delete mediaPublicationFiles[key];
+  })
+
   publication.ready();
 }
+
 
 if (Players.find({stream:true}).count() > 0) {
   console.log("SSL connections required because of stream enabled players");
