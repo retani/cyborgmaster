@@ -81,35 +81,36 @@ Meteor.startup(function () {
 
   //var nodeDir = Meteor.npmRequire("node-dir")
 
-  var publishedMedia = Meteor.publish('media', function() {
-    var self = this;  
-    Meteor.setInterval(function(){
-      addFiles(self)
-    },5000)
-    addFiles(self)
-
-    // add streams
-    var streamPlayers = Players.find({stream: true}).fetch();
-    _.each(streamPlayers, function(player){
-      console.log("adding stream")
-      self.added('media', player._id, { 
-        'url': null,
-        'name': 'stream:'+player._id,
-        'filesize': 0,
-        'target' : "video",
-        'stream' : true,
-        'streaming': true,
-        'streamname' : player.info,
-        'player_id': player._id
-      });    
-    })
-    this.ready();
-  });
 });
 
-let mediaPublicationFiles = {}
+var publishedMedia = Meteor.publish('media', function() {
+  var self = this;  
+  const mediaPublicationFiles = {}
+  Meteor.setInterval(function(){
+    addFiles(self, mediaPublicationFiles)
+  },5000)
+  addFiles(self, mediaPublicationFiles)
 
-function addFiles(publication) { // TODO: do not add the same files all the time
+  // add streams
+  var streamPlayers = Players.find({stream: true}).fetch();
+  _.each(streamPlayers, function(player){
+    console.log("adding stream")
+    self.added('media', player._id, { 
+      'url': null,
+      'name': 'stream:'+player._id,
+      'filesize': 0,
+      'target' : "video",
+      'stream' : true,
+      'streaming': true,
+      'streamname' : player.info,
+      'player_id': player._id
+    });    
+  })
+  this.ready();
+});
+
+
+function addFiles(publication, mediaPublicationFiles) { // TODO: do not add the same files all the time. Note: Subscription contents need to be added and removed for each subscription somehow separately
 
   var path = local_media_path;
   var medias = fs.readdirSync(path)
