@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.5.5",
-    "bcrypt": "^1.0.3",
+    "bcrypt": "^5.0.0",
     "express": "^4.17.1",
     "ios-detector": "^1.0.0",
     "signal-master": "^1.0.1"
