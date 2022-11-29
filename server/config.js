@@ -1,6 +1,6 @@
 mediaserver_address = process.env.CYBORGMASTER_MEDIASERVER_HOST || "192.168.178.30:3000"
 mediaserver_path = process.env.CYBORGMASTER_MEDIASERVER_PATH || "media/"
-local_media_path = process.env.CYBORGMASTER_LOCAL_MEDIA_PATH || "/Users/holger/Documents/Projekte/playmaster/media/"
+local_media_path = process.env.CYBORGMASTER_LOCAL_MEDIA_PATH || "/Users/holger/Documents/Projekte/360vr/code/cyborgmaster/media/" 
 key_path = '/Users/internil/server.key'
 cert_path = '/Users/internil/server.crt'
 enable_media_server = true
