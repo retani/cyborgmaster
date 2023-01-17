@@ -1,3 +1,5 @@
+import { UserStatus } from "meteor/mizzao:user-status";
+
 Meteor.startup(function () {
 
   if (enable_media_server) {
